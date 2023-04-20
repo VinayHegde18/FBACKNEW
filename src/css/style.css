@@ -1,0 +1,36 @@
+#main{
+	-fx-background-color:#B1A6A4;
+}
+#logLabel{
+	-fx-text-fill:#E5BCB4;
+}
+#exit{
+	-fx-background-color:#DA7708;
+	-fx-text-fill:white;
+}
+#leftContainer{
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 50, 0, 0, 0);
+	-fx-background-radius:15;
+}
+#rightContainer{
+	-fx-background-color:#31C0D9;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 50, 0, 0, 0);
+	-fx-background-radius:15;
+	-fx-border-width:10;
+}
+#uIcon{
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, 0, 0);
+	-fx-background-radius:15;
+}
+#pIcon{
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, 0, 0);
+	-fx-background-radius:15;
+}
+#submit{
+	-fx-background-color:black;
+	-fx-text-fill:white;
+}
+#signuplink{
+	-fx-text-fill:white;
+}
+
