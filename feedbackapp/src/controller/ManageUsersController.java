@@ -51,6 +51,7 @@ public class ManageUsersController implements Initializable {
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+ 
 		Connection con;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
@@ -63,6 +64,7 @@ public class ManageUsersController implements Initializable {
 				dataList.add(new ManageUsersModel(rs.getInt("userid"), rs.getString("name"), rs.getString("username"),
 						rs.getString("email")));
 			}
+			manageUsersTable.setItems(dataList);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -131,11 +133,10 @@ public class ManageUsersController implements Initializable {
 		};
 
 		actionColumn.setCellFactory(cellfactory);
-		manageUsersTable.setItems(dataList);
 	}
 	
 	public void refreshTable() {
 		dataList.clear();
-		initialize(null,null);
+		ManageUsersController mmController = new ManageUsersController();
 	}
 }

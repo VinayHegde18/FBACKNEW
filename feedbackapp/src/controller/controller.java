@@ -44,6 +44,8 @@ public class controller {
 	String password;
 
 	public void submit(ActionEvent event) throws SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
+
+		
 		uname = text1.getText();
 		password = text2.getText();
 
@@ -64,12 +66,12 @@ public class controller {
 		if (rs.next() && uname.equalsIgnoreCase(rs.getString("username")) && password.equals(rs.getString("password"))) {
 //			uname = rs.getString("username");
 			int level = rs.getInt("level");
-			if(level == 1) {
-				Node node = (Node) event.getSource();
-				Stage stage = (Stage) node.getScene().getWindow();
-				stage.close();
-				try {
+			if(level == 1) {	
 
+				try {
+					Node node = (Node) event.getSource();
+					Stage stage = (Stage) node.getScene().getWindow();
+					stage.close();
 					FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/admindashboard.fxml"));
 
 					Pane root = loader.load();
@@ -86,7 +88,7 @@ public class controller {
 
 					loginStage.show();
 				} catch (IOException e) {
-					System.err.println(String.format("Error: %s", e.getMessage()));
+				 e.printStackTrace();
 				}
 			}
 			else {
@@ -140,7 +142,6 @@ public class controller {
 		      }
 		}
 	}
-//	}
 	@FXML
     void onClickSignupcntrl(ActionEvent event) throws SQLException {
 //           SignUpController SignUpController = new SignUpController();

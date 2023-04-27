@@ -31,71 +31,68 @@ import javafx.stage.Stage;
 import model.AddCountryModel;
 import model.AllRequirementsModel;
 
-public class AddUserController{
+public class AddUserController {
 
-    @FXML
-    private AnchorPane createuserContainer;
+	@FXML
+	private AnchorPane createuserContainer;
 
-    @FXML
-    private AnchorPane rightContainer;
+	@FXML
+	private AnchorPane rightContainer;
 
-    @FXML
-    private TextField fullName;
+	@FXML
+	private TextField fullName;
 
-    @FXML
-    private TextField userName;
+	@FXML
+	private TextField userName;
 
-    @FXML
-    private TextField emailId;
+	@FXML
+	private TextField emailId;
 
-    @FXML
-    private TextField dobdt;
+	@FXML
+	private TextField dobdt;
 
-    @FXML
-    private MenuButton userLevel;
+	@FXML
+	private MenuButton userLevel;
 
-    @FXML
-    private MenuButton userCountry;
+	@FXML
+	private MenuButton userCountry;
 
-    @FXML
-    private TextField password;
+	@FXML
+	private TextField password;
 
-    @FXML
-    private TextField confirmPassword;
+	@FXML
+	private TextField confirmPassword;
 
-    @FXML
-    private Button createButton;
+	@FXML
+	private Button createButton;
 
-    @FXML
-    private Button clearButton;
+	@FXML
+	private Button clearButton;
 
-    @FXML
-    private AnchorPane leftContainer;
+	@FXML
+	private AnchorPane leftContainer;
 
-    @FXML
-    private Button closeButton;
+	@FXML
+	private Button closeButton;
 
-	
 	public AddUserController() {
-	
-	try {
-		Connection con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-		Statement stmt = con.createStatement();
-		
-         ResultSet rs = stmt
-				.executeQuery("select username from users where del is null");
-         while(rs.next()) {
-        	
-         }
-	} catch (SQLException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
+
+		try {
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+			Statement stmt = con.createStatement();
+
+			ResultSet rs = stmt.executeQuery("select username from users where del is null");
+			while (rs.next()) {
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
-	}
-    
-    @FXML
-    void onClickCreateUser(ActionEvent event) {
-    	String uname = userName.getText();
+
+	@FXML
+	void onClickCreateUser(ActionEvent event) {
+		String uname = userName.getText();
 		String pword = password.getText();
 		String cpword = confirmPassword.getText();
 		String emailStr = emailId.getText();
@@ -111,65 +108,63 @@ public class AddUserController{
 		Connection con;
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-	  		Statement stmt = con.createStatement();
-	         ResultSet rs = stmt
-	 				.executeQuery("select * from users where username ='" + uname + "'");
-	          
-	          if(rs.next()) {
-	         	    Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
-	 				newAlert.setContentText("This username is already taken");
-	 				newAlert.show();
-	          }
-			
-	         else {
-			int result = stmt.executeUpdate("insert into users(name,email,username,password,cpassword) values ('" + name + "','" + emailStr + "','" + uname + "','" + pword + "','" + cpword + "')");
+			Statement stmt = con.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from users where username ='" + uname + "'");
 
-			if(result==1) {
-				
+			if (rs.next()) {
+				Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+				newAlert.setContentText("This username is already taken");
+				newAlert.show();
 			}
+
+			else {
+				int result = stmt.executeUpdate("insert into users(name,email,username,password,cpassword) values ('"
+						+ name + "','" + emailStr + "','" + uname + "','" + pword + "','" + cpword + "')");
+
+				if (result == 1) {
+
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    }
+	}
 
-    @FXML
-    void onClickClear(ActionEvent event) {		
-    		userName.setText("");
-    		password.setText("");
-    		confirmPassword.setText("");
-    		emailId.setText("");
-    		fullName.setText("");
-    		dobdt.setText("");
-    		userLevel.setText("Select Userlevel");
-    		userCountry.setText("Select Country");
-    }
-    
-    @FXML
-    void close(ActionEvent event) {
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-		      alert.setContentText("Are You sure?");
-		      Optional<ButtonType> option = alert.showAndWait();
+	@FXML
+	void onClickClear(ActionEvent event) {
+		userName.setText("");
+		password.setText("");
+		confirmPassword.setText("");
+		emailId.setText("");
+		fullName.setText("");
+		dobdt.setText("");
+		userLevel.setText("Select Userlevel");
+		userCountry.setText("Select Country");
+	}
 
-		      if(option.get().equals(ButtonType.OK)) {
-		    	  try {
-
-		    	  FXMLLoader newloader3 = new FXMLLoader(getClass().getResource("/view/admindashboard.fxml"));
-		    	  Pane root3;
-				   Node node = (Node) event.getSource();
-				   Stage stage = (Stage) node.getScene().getWindow();
-				   stage.close();
-					root3 = newloader3.load();
-			    	  Stage adminstage = new Stage();
-			    	  Scene scene = new Scene(root3);
-			    	  adminstage.setScene(scene);
-			    	  adminstage.show();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-		      }
-    }
+//	@FXML
+//	void close(ActionEvent event) {
+//		Alert alert = new Alert(AlertType.CONFIRMATION);
+//		alert.setContentText("Are You sure?");
+//		Optional<ButtonType> option = alert.showAndWait();
+//
+//		if (option.get().equals(ButtonType.OK)) {
+//			try {
+//				Node node = (Node) event.getSource();
+//				Stage stage = (Stage) node.getScene().getWindow();
+//				stage.close();
+//				FXMLLoader newloader3 = new FXMLLoader(getClass().getResource("/view/admindashboard.fxml"));
+//				Pane root3;
+//				root3 = newloader3.load();
+//				Stage adminstage = new Stage();
+//				Scene scene = new Scene(root3);
+//				adminstage.setScene(scene);
+//				adminstage.show();
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//		}
+//	}
 
 }
