@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 
+import dbcon.DbCon;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,6 +43,8 @@ public class controller {
 
 	static String uname ;
 	String password;
+	
+	private Connection con;
 
 	public void submit(ActionEvent event) throws SQLException, NoSuchAlgorithmException, InvalidKeySpecException {
 
@@ -55,9 +58,7 @@ public class controller {
 //		KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
 //		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
 //		byte[] hash = factory.generateSecret(spec).getEncoded();
-//
-		Connection con;
-		con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+        con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
 		Statement stmt = con.createStatement();
 
 		ResultSet rs = stmt

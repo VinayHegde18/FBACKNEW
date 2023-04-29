@@ -27,34 +27,137 @@ import model.ManageUsersModel;
 
 
 public class AdminDashboardController{
-	
-	 private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
+	 @FXML
+	    protected AnchorPane adminContainer;
+
+	    @FXML
+	    protected Button logout;
+
+	    @FXML
+	    protected AnchorPane adminLeftContainer;
+
+	    @FXML
+	    protected Button profile;
+
+	    @FXML
+	    protected Button addUser;
+
+	    @FXML
+	    protected Button manageUser;
+
+	    @FXML
+	    protected Button requirements;
+
+	    @FXML
+	    protected Button someText;
+
+	    @FXML
+	    protected AnchorPane rightContainer;
+	    
+
+//	    @FXML
+//	    protected TableView<AllRequirementsModel> allReqTable;
+//
+//	    @FXML
+//	    protected TableColumn<AllRequirementsModel, Integer> reqno;
+//
+//	    @FXML
+//	    protected TableColumn<AllRequirementsModel, String> allReq;
+
+	    @FXML
+	    protected AnchorPane rightContainer1;
+
+	    @FXML
+	    protected TextField fullName;
+
+	    @FXML
+	    protected TextField userName;
+
+	    @FXML
+	    protected TextField emailId;
+
+	    @FXML
+	    protected TextField dobdt;
+
+	    @FXML
+	    protected MenuButton userLevel;
+
+	    @FXML
+	    protected MenuButton userCountry;
+
+	    @FXML
+	    protected TextField password;
+
+	    @FXML
+	    protected TextField confirmPassword;
+
+	    @FXML
+	    protected Button createButton;
+
+	    @FXML
+	    protected Button clearButton;
+
+
+		@FXML
+		protected TableView<ManageUsersModel> manageUsersTable;
+
+		@FXML
+		protected TableColumn<ManageUsersModel, Integer> slnoColumn;
+
+		@FXML
+		protected TableColumn<ManageUsersModel, String> fullNameColumn;
+
+		@FXML
+		protected TableColumn<ManageUsersModel, String> userNameColumn;
+
+		@FXML
+		protected TableColumn<ManageUsersModel, String> emailIdColumn;
+
+		@FXML
+		protected TableColumn actionColumn;
+		
+	    @FXML
+	    protected TableView<?> allReqTable1;
+
+	    @FXML
+	    protected TableColumn<AllRequirementsModel, Integer> reqno1;
+
+	    @FXML
+	    protected TableColumn<AllRequirementsModel, String> allReq1;
+	    
+	    @FXML
+	    protected TextField unameProfile;
+	    
+
+	    @FXML
+	    protected AnchorPane profileContainer;
+//	 private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 	    
 //		@Override
 //		public void initialize(URL arg0, ResourceBundle arg1) {
-	 public AdminDashboardController() {
-			Connection con;
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-				Statement stmt = con.createStatement();
-
-				ResultSet rs = stmt.executeQuery("select * from allreq order by reqno desc limit 5");
-
-				while (rs.next()) {
-
-					dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
-
-				}
-				globalVariables.allReqTable.setItems(dataList);
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.err.println(String.format("Error: %s", e.getMessage()));
-			}
-			globalVariables.reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
-			globalVariables.allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
-			
-		}
+//	 public AdminDashboardController() {
+//			Connection con;
+//			try {
+//				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+//				Statement stmt = con.createStatement();
+//
+//				ResultSet rs = stmt.executeQuery("select * from allreq order by reqno desc limit 5");
+//
+//				while (rs.next()) {
+//
+//					dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
+//
+//				}
+//				allReqTable.setItems(dataList);
+//
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//				System.err.println(String.format("Error: %s", e.getMessage()));
+//			}
+//			reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
+//			allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
+//			
+//		}
 
 	
        GlobalVariables globalVariables = new GlobalVariables();
@@ -62,42 +165,38 @@ public class AdminDashboardController{
 	    @FXML
 	    void onSelectChangeView(ActionEvent event) {
 	    	try{
-	    	 if(event.getSource()==globalVariables.profile) {
-	    		 globalVariables.profileContainer.setVisible(true);
-	    		 globalVariables.rightContainer1.setVisible(false);
-	    		 globalVariables.manageUsersTable.setVisible(false);
-	    		 globalVariables.allReqTable1.setVisible(false);
-	    		 globalVariables.rightContainer.setVisible(false);
+	    	 if(event.getSource()==profile) {
+	    		 profileContainer.setVisible(true);
+	    		 rightContainer1.setVisible(false);
+	    		 manageUsersTable.setVisible(false);
+	    		 allReqTable1.setVisible(false);
 	          }
-	          else if(event.getSource()==globalVariables.addUser) {
-	        	  globalVariables.profileContainer.setVisible(false);
-	        	  globalVariables.rightContainer1.setVisible(true);
-	        	  globalVariables.manageUsersTable.setVisible(false);
-	        	  globalVariables.allReqTable1.setVisible(false);
-	        	  globalVariables.rightContainer.setVisible(false);
+	          else if(event.getSource()==addUser) {
+	        	  profileContainer.setVisible(false);
+	        	  rightContainer1.setVisible(true);
+	        	  manageUsersTable.setVisible(false);
+	        	  allReqTable1.setVisible(false);
 		    		 
-		    		 AddUserController addUserController = new AddUserController();
+//		    		 AddUserController addUserController = new AddUserController();
 	          }
-	          else if(event.getSource()==globalVariables.manageUser) {
-	        	  globalVariables.profileContainer.setVisible(false);
-	        	  globalVariables.rightContainer1.setVisible(false);
-	        	  globalVariables.manageUsersTable.setVisible(true);
-	        	  globalVariables.allReqTable1.setVisible(false);
-	        	  globalVariables.rightContainer.setVisible(false);
+	          else if(event.getSource()==manageUser) {
+	        	  profileContainer.setVisible(false);
+	        	  rightContainer1.setVisible(false);
+	        	  manageUsersTable.setVisible(true);
+	        	  allReqTable1.setVisible(false);
 	        	  ManageUsersController manageUsersController = new ManageUsersController();
-		    		 manageUsersController.initialize(null, null);
+	        	  manageUsersController.getUsers();
 	          }
-	          else if(event.getSource()==globalVariables.requirements) {
-	        	  globalVariables.profileContainer.setVisible(false);
-	        	  globalVariables.rightContainer1.setVisible(false);
-	        	  globalVariables.manageUsersTable.setVisible(false);
-	        	  globalVariables.allReqTable1.setVisible(true);
-	        	  globalVariables.rightContainer.setVisible(false);
-		    		 AllRequirementsController AllRequirementsController = new AllRequirementsController();
+	          else if(event.getSource()==requirements) {
+	        	  profileContainer.setVisible(false);
+	        	  rightContainer1.setVisible(false);
+	        	  manageUsersTable.setVisible(false);
+	        	  allReqTable1.setVisible(true);
+//		    		 AllRequirementsController AllRequirementsController = new AllRequirementsController();
 	          }
 	    }
 	    catch(Exception e) {
-			System.out.println("error while loading");
+			System.out.println("error while loading -"+e.getLocalizedMessage());
 
 		}
 	    }

@@ -1,6 +1,7 @@
 package controller;
 
 import java.net.URL;
+import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -9,6 +10,7 @@ import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import dbcon.DbCon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -27,36 +29,38 @@ import javafx.util.Callback;
 import model.AllRequirementsModel;
 import model.ManageUsersModel;
 
-public class ManageUsersController implements Initializable {
+public class ManageUsersController implements Initializable{
 
 	@FXML
-	private TableView<ManageUsersModel> manageUsersTable;
+	public TableView<ManageUsersModel> manageUsersTable;
 
 	@FXML
-	private TableColumn<ManageUsersModel, Integer> slnoColumn;
+	public TableColumn<ManageUsersModel, Integer> slnoColumn;
 
 	@FXML
-	private TableColumn<ManageUsersModel, String> fullNameColumn;
+	public TableColumn<ManageUsersModel, String> fullNameColumn;
 
 	@FXML
-	private TableColumn<ManageUsersModel, String> userNameColumn;
+	public TableColumn<ManageUsersModel, String> userNameColumn;
 
 	@FXML
-	private TableColumn<ManageUsersModel, String> emailIdColumn;
+	public TableColumn<ManageUsersModel, String> emailIdColumn;
 
 	@FXML
-	private TableColumn actionColumn;
+	public TableColumn actionColumn;
+	
+	private Connection con;
 
-	private ObservableList<ManageUsersModel> dataList = FXCollections.observableArrayList();
+	public ObservableList<ManageUsersModel> dataList = FXCollections.observableArrayList();
 
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
+	   DbCon dbCon = new DbCon();
+}
+	public void getUsers() {
  
-		Connection con;
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
 			Statement stmt = con.createStatement();
-
 			ResultSet rs = stmt.executeQuery("select * from users where del is null");
 
 			while (rs.next()) {
@@ -70,7 +74,7 @@ public class ManageUsersController implements Initializable {
 			e.printStackTrace();
 			System.err.println(String.format("Error: %s", e.getMessage()));
 		}
-		slnoColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, Integer>("slno"));
+		slnoColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, Integer>("userId"));
 		fullNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("fullName"));
 		userNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("userName"));
 		emailIdColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("emailId"));
@@ -90,7 +94,7 @@ public class ManageUsersController implements Initializable {
 						final Button deleteButton = new Button("Delete");
 						deleteButton.setOnAction(event -> {
 							ManageUsersModel m = getTableView().getItems().get(getIndex());
-							int userId = m.getSlno();
+							int userId = m.getuserId();
 							
 							if(userId!=1) {
 							
@@ -133,6 +137,7 @@ public class ManageUsersController implements Initializable {
 		};
 
 		actionColumn.setCellFactory(cellfactory);
+		
 	}
 	
 	public void refreshTable() {

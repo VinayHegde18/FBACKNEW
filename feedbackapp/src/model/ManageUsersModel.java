@@ -2,25 +2,25 @@ package model;
 
 
 public class ManageUsersModel {
-	int slno;
+	int userId;
 	String fullName;
 	String userName;
 	String emailId;
 
-	public ManageUsersModel(int slno, String fullName, String userName, String emailId) {
-		this.slno = slno;
+	public ManageUsersModel(int userId, String fullName, String userName, String emailId) {
+		this.userId = userId;
 		this.fullName = fullName;
 		this.userName = userName;
 		this.emailId = emailId;
 		
 	}
 
-	public int getSlno() {
-		return slno;
+	public int getuserId() {
+		return userId;
 	}
 
-	public void setSlno(int slno) {
-		this.slno = slno;
+	public void setuserId(int userId) {
+		this.userId = userId;
 	}
 
 	public String getFullName() {
