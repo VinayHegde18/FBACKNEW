@@ -1,15 +1,24 @@
 package model;
 
 public class AddCountryModel {
-    String countryNames;
-    public AddCountryModel(String countryNames) {
-    	this.countryNames= countryNames;
+    String countryname;
+    int countryid;
+    
+    public AddCountryModel(int countryid,String countryname) {
+    	this.countryid=countryid;
+    	this.countryname= countryname;
     }
     
-    public String getCountryNames() {
-    	return countryNames;
-    }
-    public void setCountryNames(String countryNames) {
-    	this.countryNames = countryNames;
-    }
+	public String getCountryname() {
+		return countryname;
+	}
+	public void setCountryname(String countryname) {
+		this.countryname = countryname;
+	}
+	public int getCountryid() {
+		return countryid;
+	}
+	public void setCountryid(int countryid) {
+		this.countryid = countryid;
+	}
 }

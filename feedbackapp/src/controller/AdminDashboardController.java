@@ -6,54 +6,56 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javax.xml.catalog.Catalog;
 
+import jakarta.persistence.metamodel.StaticMetamodel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import model.AddCountryModel;
 import model.AllRequirementsModel;
 import model.ManageUsersModel;
 
+public class AdminDashboardController {
+	@FXML
+	protected AnchorPane adminContainer;
 
-public class AdminDashboardController{
-	 @FXML
-	    protected AnchorPane adminContainer;
+	@FXML
+	protected Button logout;
 
-	    @FXML
-	    protected Button logout;
+	@FXML
+	protected AnchorPane adminLeftContainer;
 
-	    @FXML
-	    protected AnchorPane adminLeftContainer;
+	@FXML
+	protected Button profile;
 
-	    @FXML
-	    protected Button profile;
+	@FXML
+	protected Button addUser;
 
-	    @FXML
-	    protected Button addUser;
+	@FXML
+	protected Button manageUser;
 
-	    @FXML
-	    protected Button manageUser;
+	@FXML
+	protected Button requirements;
 
-	    @FXML
-	    protected Button requirements;
+	@FXML
+	protected Button someText;
 
-	    @FXML
-	    protected Button someText;
-
-	    @FXML
-	    protected AnchorPane rightContainer;
-	    
+	@FXML
+	protected AnchorPane rightContainer;
 
 //	    @FXML
 //	    protected TableView<AllRequirementsModel> allReqTable;
@@ -64,75 +66,86 @@ public class AdminDashboardController{
 //	    @FXML
 //	    protected TableColumn<AllRequirementsModel, String> allReq;
 
-	    @FXML
-	    protected AnchorPane rightContainer1;
+	@FXML
+	protected AnchorPane rightContainer1;
 
-	    @FXML
-	    protected TextField fullName;
+	@FXML
+	protected TextField fullName;
 
-	    @FXML
-	    protected TextField userName;
+	@FXML
+	protected TextField userName;
 
-	    @FXML
-	    protected TextField emailId;
+	@FXML
+	protected TextField emailId;
 
-	    @FXML
-	    protected TextField dobdt;
+	@FXML
+	protected TextField dobdt;
 
-	    @FXML
-	    protected MenuButton userLevel;
+	@FXML
+	protected MenuButton userLevel;
 
-	    @FXML
-	    protected MenuButton userCountry;
+	@FXML
+	protected MenuButton userCountry;
 
-	    @FXML
-	    protected TextField password;
+	@FXML
+	protected TextField password;
 
-	    @FXML
-	    protected TextField confirmPassword;
+	@FXML
+	protected TextField confirmPassword;
 
-	    @FXML
-	    protected Button createButton;
+	@FXML
+	protected Button createButton;
 
-	    @FXML
-	    protected Button clearButton;
+	@FXML
+	protected Button clearButton;
 
+	@FXML
+	protected TableView<ManageUsersModel> manageUsersTable;
 
-		@FXML
-		protected TableView<ManageUsersModel> manageUsersTable;
+	@FXML
+	protected TableColumn<ManageUsersModel, Integer> slnoColumn;
 
-		@FXML
-		protected TableColumn<ManageUsersModel, Integer> slnoColumn;
+	@FXML
+	protected TableColumn<ManageUsersModel, String> fullNameColumn;
 
-		@FXML
-		protected TableColumn<ManageUsersModel, String> fullNameColumn;
+	@FXML
+	protected TableColumn<ManageUsersModel, String> userNameColumn;
 
-		@FXML
-		protected TableColumn<ManageUsersModel, String> userNameColumn;
+	@FXML
+	protected TableColumn<ManageUsersModel, String> emailIdColumn;
 
-		@FXML
-		protected TableColumn<ManageUsersModel, String> emailIdColumn;
+	@FXML
+	protected TableColumn actionColumn;
 
-		@FXML
-		protected TableColumn actionColumn;
-		
-	    @FXML
-	    protected TableView<?> allReqTable1;
+	@FXML
+	protected TableView<?> allReqTable1;
 
-	    @FXML
-	    protected TableColumn<AllRequirementsModel, Integer> reqno1;
+	@FXML
+	protected TableColumn<AllRequirementsModel, Integer> reqno1;
 
-	    @FXML
-	    protected TableColumn<AllRequirementsModel, String> allReq1;
-	    
-	    @FXML
-	    protected TextField unameProfile;
-	    
+	@FXML
+	protected TableColumn<AllRequirementsModel, String> allReq1;
 
-	    @FXML
-	    protected AnchorPane profileContainer;
+	@FXML
+	protected TextField unameProfile;
+
+	@FXML
+	private Button authLevel;
+
+	@FXML
+	private AnchorPane authPanel;
+
+	@FXML
+	private TextField authField;
+
+	@FXML
+	protected AnchorPane profileContainer;
+
+	@FXML
+	private ChoiceBox<String> authLevelBox;
+
 //	 private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
-	    
+
 //		@Override
 //		public void initialize(URL arg0, ResourceBundle arg1) {
 //	 public AdminDashboardController() {
@@ -159,24 +172,24 @@ public class AdminDashboardController{
 //			
 //		}
 
-	
-       GlobalVariables globalVariables = new GlobalVariables();
+	GlobalVariables globalVariables = new GlobalVariables();
 
-	    @FXML
+	@FXML
 	    void onSelectChangeView(ActionEvent event) {
-	    	try{
+		
 	    	 if(event.getSource()==profile) {
 	    		 profileContainer.setVisible(true);
 	    		 rightContainer1.setVisible(false);
 	    		 manageUsersTable.setVisible(false);
 	    		 allReqTable1.setVisible(false);
+	    		 authPanel.setVisible(false);
 	          }
 	          else if(event.getSource()==addUser) {
 	        	  profileContainer.setVisible(false);
 	        	  rightContainer1.setVisible(true);
 	        	  manageUsersTable.setVisible(false);
 	        	  allReqTable1.setVisible(false);
-		    		 
+	        	  authPanel.setVisible(false);
 //		    		 AddUserController addUserController = new AddUserController();
 	          }
 	          else if(event.getSource()==manageUser) {
@@ -184,6 +197,7 @@ public class AdminDashboardController{
 	        	  rightContainer1.setVisible(false);
 	        	  manageUsersTable.setVisible(true);
 	        	  allReqTable1.setVisible(false);
+	        	  authPanel.setVisible(false);
 	        	  ManageUsersController manageUsersController = new ManageUsersController();
 	        	  manageUsersController.getUsers();
 	          }
@@ -192,21 +206,49 @@ public class AdminDashboardController{
 	        	  rightContainer1.setVisible(false);
 	        	  manageUsersTable.setVisible(false);
 	        	  allReqTable1.setVisible(true);
+	        	  authPanel.setVisible(false);
 //		    		 AllRequirementsController AllRequirementsController = new AllRequirementsController();
 	          }
-	    }
-	    catch(Exception e) {
-			System.out.println("error while loading -"+e.getLocalizedMessage());
+  	 
+	          else if(event.getSource()==authLevel) {
+	        	  profileContainer.setVisible(false);
+	        	  rightContainer1.setVisible(false);
+	        	  manageUsersTable.setVisible(false);
+	        	  allReqTable1.setVisible(false);
+	        	  authPanel.setVisible(true);
+	        	  
+//	        	  AddCountryController addCountryController = new AddCountryController();
+//	        	  authLevelBox.getItems().addAll(addCountryController.list);
 
-		}
-	    }
-	   
+					
+					ArrayList<String> list = new ArrayList<>();
+				
+					Connection con;
+					try {
+						con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+						Statement stmt = con.createStatement();
+						ResultSet rs = stmt.executeQuery("select * from countrylist");
+					
+						while(rs.next())
+						{
+//							countryList.add(rs.getInt("countryid"), rs.getString("countryname"));
+								list.add(rs.getString("countryname"));
+						}
+						authLevelBox.getItems().addAll(list);
+					} catch (SQLException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+
+	}
+	    	}
+
 	    @FXML
 	    void logout(ActionEvent event) {
 	      LogoutController LogoutController= new LogoutController(event);
 	  	}
-	
-	
+
 //	    
 //    @FXML
 //    private AnchorPane adminContainer;
@@ -343,5 +385,4 @@ public class AdminDashboardController{
 //		}
 //    }
 //
-    }
-
+}
