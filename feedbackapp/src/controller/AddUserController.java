@@ -40,16 +40,16 @@ public class AddUserController {
 	private AnchorPane rightContainer;
 
 	@FXML
-	private TextField fullName;
+	private static TextField fullName;
 
 	@FXML
-	private TextField userName;
+	private static TextField userName;
 
 	@FXML
-	private TextField emailId;
+	private static TextField emailId;
 
 	@FXML
-	private TextField dobdt;
+	private static TextField dobdt;
 
 	@FXML
 	private MenuButton userLevel;
@@ -58,10 +58,10 @@ public class AddUserController {
 	private MenuButton userCountry;
 
 	@FXML
-	private TextField password;
+	private static TextField password;
 
 	@FXML
-	private TextField confirmPassword;
+	private static TextField confirmPassword;
 
 	@FXML
 	private Button createButton;
@@ -75,28 +75,29 @@ public class AddUserController {
 	@FXML
 	private Button closeButton;
 
-	public AddUserController() {
+//	public AddUserController() {
+//
+//		try {
+//			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+//			Statement stmt = con.createStatement();
+//
+//			ResultSet rs = stmt.executeQuery("select username from users where del is null");
+//			while (rs.next()) {
+//
+//			}
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
-		try {
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-			Statement stmt = con.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select username from users where del is null");
-			while (rs.next()) {
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	@FXML
-	void onClickCreateUser(ActionEvent event) {
-		String uname = userName.getText();
-		String pword = password.getText();
-		String cpword = confirmPassword.getText();
-		String emailStr = emailId.getText();
-		String name = fullName.getText();
+	public static void onClickCreateUser(String uname,String pword,String cpword,String emailStr,String name) {
+//		String uname = userName.getText();
+//		String pword = password.getText();
+//		String cpword = confirmPassword.getText();
+//		String emailStr = emailId.getText();
+//		String name = fullName.getText();
+		
 
 //		SecureRandom random = new SecureRandom();
 //		byte[] salt = new byte[16];
@@ -122,7 +123,7 @@ public class AddUserController {
 						+ name + "','" + emailStr + "','" + uname + "','" + pword + "','" + cpword + "')");
 
 				if (result == 1) {
-
+                     System.out.println("inserted successfully");
 				}
 			}
 		} catch (SQLException e) {
@@ -131,8 +132,7 @@ public class AddUserController {
 		}
 	}
 
-	@FXML
-	void onClickClear(ActionEvent event) {
+	public void onClickClear() {
 		userName.setText("");
 		password.setText("");
 		confirmPassword.setText("");

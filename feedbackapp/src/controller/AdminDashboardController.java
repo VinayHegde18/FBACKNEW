@@ -82,10 +82,10 @@ public class AdminDashboardController {
 	protected TextField dobdt;
 
 	@FXML
-	protected MenuButton userLevel;
+	private ChoiceBox<String> userLevel;
 
 	@FXML
-	protected MenuButton userCountry;
+	private ChoiceBox<String> userState;
 
 	@FXML
 	protected TextField password;
@@ -175,79 +175,133 @@ public class AdminDashboardController {
 	GlobalVariables globalVariables = new GlobalVariables();
 
 	@FXML
-	    void onSelectChangeView(ActionEvent event) {
-		
-	    	 if(event.getSource()==profile) {
-	    		 profileContainer.setVisible(true);
-	    		 rightContainer1.setVisible(false);
-	    		 manageUsersTable.setVisible(false);
-	    		 allReqTable1.setVisible(false);
-	    		 authPanel.setVisible(false);
-	          }
-	          else if(event.getSource()==addUser) {
-	        	  profileContainer.setVisible(false);
-	        	  rightContainer1.setVisible(true);
-	        	  manageUsersTable.setVisible(false);
-	        	  allReqTable1.setVisible(false);
-	        	  authPanel.setVisible(false);
-//		    		 AddUserController addUserController = new AddUserController();
-	          }
-	          else if(event.getSource()==manageUser) {
-	        	  profileContainer.setVisible(false);
-	        	  rightContainer1.setVisible(false);
-	        	  manageUsersTable.setVisible(true);
-	        	  allReqTable1.setVisible(false);
-	        	  authPanel.setVisible(false);
-	        	  ManageUsersController manageUsersController = new ManageUsersController();
-	        	  manageUsersController.getUsers();
-	          }
-	          else if(event.getSource()==requirements) {
-	        	  profileContainer.setVisible(false);
-	        	  rightContainer1.setVisible(false);
-	        	  manageUsersTable.setVisible(false);
-	        	  allReqTable1.setVisible(true);
-	        	  authPanel.setVisible(false);
+	void onSelectChangeView(ActionEvent event) {
+
+		if (event.getSource() == profile) {
+			profileContainer.setVisible(true);
+			rightContainer1.setVisible(false);
+			manageUsersTable.setVisible(false);
+			allReqTable1.setVisible(false);
+			authPanel.setVisible(false);
+		} else if (event.getSource() == addUser) {
+			profileContainer.setVisible(false);
+			rightContainer1.setVisible(true);
+			manageUsersTable.setVisible(false);
+			allReqTable1.setVisible(false);
+			authPanel.setVisible(false);
+
+			ArrayList<String> levellist = new ArrayList<>();
+
+			Connection con;
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+				Statement stmt = con.createStatement();
+				ResultSet rs1 = stmt.executeQuery("select * from userlevel");
+
+				while (rs1.next()) {
+//							countryList.add(rs.getInt("countryid"), rs.getString("countryname"));
+					levellist.add(rs1.getString("levelname"));
+				}
+				userLevel.getItems().addAll(levellist);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			ArrayList<String> statelist = new ArrayList<>();
+
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+				Statement stmt = con.createStatement();
+				ResultSet rs1 = stmt.executeQuery("select * from statelist");
+
+				while (rs1.next()) {
+//							countryList.add(rs.getInt("countryid"), rs.getString("countryname"));
+					statelist.add(rs1.getString("statename"));
+				}
+				userState.getItems().addAll(statelist);
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+			}
+
+			if (event.getSource() == createButton) {
+				createUser();
+			}
+			if (event.getSource() == clearButton) {
+						String uname = userName.getText();
+						String pword = password.getText();
+						String cpword = confirmPassword.getText();
+						String emailStr = emailId.getText();
+						String name = fullName.getText();
+				AddUserController addUserController = new AddUserController();
+				addUserController.onClickClear();
+			}
+
+		} else if (event.getSource() == manageUser) {
+			profileContainer.setVisible(false);
+			rightContainer1.setVisible(false);
+			manageUsersTable.setVisible(true);
+			allReqTable1.setVisible(false);
+			authPanel.setVisible(false);
+			ManageUsersController manageUsersController = new ManageUsersController();
+			manageUsersController.getUsers();
+		} else if (event.getSource() == requirements) {
+			profileContainer.setVisible(false);
+			rightContainer1.setVisible(false);
+			manageUsersTable.setVisible(false);
+			allReqTable1.setVisible(true);
+			authPanel.setVisible(false);
 //		    		 AllRequirementsController AllRequirementsController = new AllRequirementsController();
-	          }
-  	 
-	          else if(event.getSource()==authLevel) {
-	        	  profileContainer.setVisible(false);
-	        	  rightContainer1.setVisible(false);
-	        	  manageUsersTable.setVisible(false);
-	        	  allReqTable1.setVisible(false);
-	        	  authPanel.setVisible(true);
-	        	  
+		}
+
+		else if (event.getSource() == authLevel) {
+			profileContainer.setVisible(false);
+			rightContainer1.setVisible(false);
+			manageUsersTable.setVisible(false);
+			allReqTable1.setVisible(false);
+			authPanel.setVisible(true);
+
 //	        	  AddCountryController addCountryController = new AddCountryController();
 //	        	  authLevelBox.getItems().addAll(addCountryController.list);
 
-					
-					ArrayList<String> list = new ArrayList<>();
-				
-					Connection con;
-					try {
-						con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-						Statement stmt = con.createStatement();
-						ResultSet rs = stmt.executeQuery("select * from countrylist");
-					
-						while(rs.next())
-						{
+			ArrayList<String> list = new ArrayList<>();
+
+			Connection con;
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery("select * from authtbl");
+
+				while (rs.next()) {
 //							countryList.add(rs.getInt("countryid"), rs.getString("countryname"));
-								list.add(rs.getString("countryname"));
-						}
-						authLevelBox.getItems().addAll(list);
-					} catch (SQLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				
+					list.add(rs.getString("authname"));
+				}
+				authLevelBox.getItems().addAll(list);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
+		}
 	}
-	    	}
+	
+	public void createUser() {
+		String uname = userName.getText();
+		String pword = password.getText();
+		String cpword = confirmPassword.getText();
+		String emailStr = emailId.getText();
+		String name = fullName.getText();
+		AddUserController addUserController = new AddUserController();
+		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name);
+	}
+	
+	
 
-	    @FXML
-	    void logout(ActionEvent event) {
-	      LogoutController LogoutController= new LogoutController(event);
-	  	}
+	@FXML
+	void logout(ActionEvent event) {
+		LogoutController LogoutController = new LogoutController(event);
+	}
 
 //	    
 //    @FXML

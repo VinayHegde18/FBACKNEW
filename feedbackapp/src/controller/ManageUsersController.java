@@ -60,6 +60,7 @@ public class ManageUsersController implements Initializable{
 	public void getUsers() {
  
 		try {
+			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
 			Statement stmt = con.createStatement();
 			ResultSet rs = stmt.executeQuery("select * from users where del is null");
 
