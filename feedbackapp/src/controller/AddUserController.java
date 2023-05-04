@@ -52,10 +52,10 @@ public class AddUserController {
 	private static TextField dobdt;
 
 	@FXML
-	private MenuButton userLevel;
+	private static MenuButton userLevel;
 
 	@FXML
-	private MenuButton userCountry;
+	private static MenuButton userCountry;
 
 	@FXML
 	private static TextField password;
@@ -132,16 +132,17 @@ public class AddUserController {
 		}
 	}
 
-	public void onClickClear() {
-		userName.setText("");
-		password.setText("");
-		confirmPassword.setText("");
-		emailId.setText("");
-		fullName.setText("");
-		dobdt.setText("");
-		userLevel.setText("Select Userlevel");
-		userCountry.setText("Select Country");
-	}
+//	public static void onClickClear() {
+//		
+//		userName.setText("");
+//		password.setText("");
+//		confirmPassword.setText("");
+//		emailId.setText("");
+//		fullName.setText("");
+//		dobdt.setText("");
+//		userLevel.setText("Select Userlevel");
+//		userCountry.setText("Select Country");
+//	}
 
 //	@FXML
 //	void close(ActionEvent event) {

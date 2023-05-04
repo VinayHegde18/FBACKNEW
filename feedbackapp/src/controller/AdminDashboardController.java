@@ -1,6 +1,7 @@
 package controller;
 
 import java.net.URL;
+import java.security.PublicKey;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -11,11 +12,14 @@ import java.util.ResourceBundle;
 
 import javax.xml.catalog.Catalog;
 
+import com.mysql.cj.Constants;
+
 import jakarta.persistence.metamodel.StaticMetamodel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -118,13 +122,22 @@ public class AdminDashboardController {
 	protected TableColumn actionColumn;
 
 	@FXML
-	protected TableView<?> allReqTable1;
+	protected TableView<AllRequirementsModel> allReqTable1;
 
 	@FXML
 	protected TableColumn<AllRequirementsModel, Integer> reqno1;
 
 	@FXML
 	protected TableColumn<AllRequirementsModel, String> allReq1;
+	
+	@FXML
+	protected TableView<AllRequirementsModel> allReqTable;
+
+	@FXML
+	protected TableColumn<AllRequirementsModel, Integer> reqno;
+
+	@FXML
+	protected TableColumn<AllRequirementsModel, String> allReq;
 
 	@FXML
 	protected TextField unameProfile;
@@ -143,36 +156,45 @@ public class AdminDashboardController {
 
 	@FXML
 	private ChoiceBox<String> authLevelBox;
+	
+    @FXML
+    private AnchorPane reqContainer;
 
-//	 private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
+	Connection con;
+    
+	
+	private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 
-//		@Override
-//		public void initialize(URL arg0, ResourceBundle arg1) {
-//	 public AdminDashboardController() {
-//			Connection con;
-//			try {
-//				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-//				Statement stmt = con.createStatement();
-//
-//				ResultSet rs = stmt.executeQuery("select * from allreq order by reqno desc limit 5");
-//
-//				while (rs.next()) {
-//
-//					dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
-//
-//				}
-//				allReqTable.setItems(dataList);
-//
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				System.err.println(String.format("Error: %s", e.getMessage()));
-//			}
-//			reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
-//			allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
-//			
-//		}
+	public void DashboardController() {
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+				Statement stmt = con.createStatement();
+
+				ResultSet rs = stmt.executeQuery("select * from allreq order by reqno desc limit 5");
+
+				while (rs.next()) {
+
+					dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
+
+				}
+				allReqTable.setItems(dataList);
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.err.println(String.format("Error: %s", e.getMessage()));
+			}
+			reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
+			allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
+			
+		}
 
 	GlobalVariables globalVariables = new GlobalVariables();
+
+	ArrayList<String> list = new ArrayList<>();
+
+	ArrayList<String> statelist = new ArrayList<>();
+
+	ArrayList<String> levellist = new ArrayList<>();
 
 	@FXML
 	void onSelectChangeView(ActionEvent event) {
@@ -183,60 +205,19 @@ public class AdminDashboardController {
 			manageUsersTable.setVisible(false);
 			allReqTable1.setVisible(false);
 			authPanel.setVisible(false);
+			reqContainer.setVisible(false);
 		} else if (event.getSource() == addUser) {
 			profileContainer.setVisible(false);
 			rightContainer1.setVisible(true);
 			manageUsersTable.setVisible(false);
 			allReqTable1.setVisible(false);
 			authPanel.setVisible(false);
+			reqContainer.setVisible(false);
+//			userState.getItems().clear();
+//			userLevel.getItems().clear();
 
-			ArrayList<String> levellist = new ArrayList<>();
-
-			Connection con;
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-				Statement stmt = con.createStatement();
-				ResultSet rs1 = stmt.executeQuery("select * from userlevel");
-
-				while (rs1.next()) {
-//							countryList.add(rs.getInt("countryid"), rs.getString("countryname"));
-					levellist.add(rs1.getString("levelname"));
-				}
-				userLevel.getItems().addAll(levellist);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			ArrayList<String> statelist = new ArrayList<>();
-
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-				Statement stmt = con.createStatement();
-				ResultSet rs1 = stmt.executeQuery("select * from statelist");
-
-				while (rs1.next()) {
-//							countryList.add(rs.getInt("countryid"), rs.getString("countryname"));
-					statelist.add(rs1.getString("statename"));
-				}
-				userState.getItems().addAll(statelist);
-			} catch (SQLException e) {
-
-				e.printStackTrace();
-			}
-
-			if (event.getSource() == createButton) {
-				createUser();
-			}
-			if (event.getSource() == clearButton) {
-						String uname = userName.getText();
-						String pword = password.getText();
-						String cpword = confirmPassword.getText();
-						String emailStr = emailId.getText();
-						String name = fullName.getText();
-				AddUserController addUserController = new AddUserController();
-				addUserController.onClickClear();
-			}
+			getUserLevel();
+			getState();
 
 		} else if (event.getSource() == manageUser) {
 			profileContainer.setVisible(false);
@@ -244,14 +225,20 @@ public class AdminDashboardController {
 			manageUsersTable.setVisible(true);
 			allReqTable1.setVisible(false);
 			authPanel.setVisible(false);
-			ManageUsersController manageUsersController = new ManageUsersController();
-			manageUsersController.getUsers();
+			reqContainer.setVisible(false);
+
+			FXMLLoader loader = new FXMLLoader();
+//			Object controller = loader.getController();
+	        
+	        ManageUsersController manageUsersController = loader.getController();
+//			ManageUsersController.getUsers();
 		} else if (event.getSource() == requirements) {
 			profileContainer.setVisible(false);
 			rightContainer1.setVisible(false);
 			manageUsersTable.setVisible(false);
 			allReqTable1.setVisible(true);
 			authPanel.setVisible(false);
+			reqContainer.setVisible(false);
 //		    		 AllRequirementsController AllRequirementsController = new AllRequirementsController();
 		}
 
@@ -261,11 +248,9 @@ public class AdminDashboardController {
 			manageUsersTable.setVisible(false);
 			allReqTable1.setVisible(false);
 			authPanel.setVisible(true);
-
+			reqContainer.setVisible(false);
 //	        	  AddCountryController addCountryController = new AddCountryController();
 //	        	  authLevelBox.getItems().addAll(addCountryController.list);
-
-			ArrayList<String> list = new ArrayList<>();
 
 			Connection con;
 			try {
@@ -282,11 +267,48 @@ public class AdminDashboardController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 		}
 	}
-	
-	public void createUser() {
+
+	public void getState() {
+		Connection con;
+		userState.getItems().clear();
+//		userLevel.getItems().clear();
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+			Statement stmt = con.createStatement();
+			ResultSet rs1 = stmt.executeQuery("select * from statelist");
+
+			while (rs1.next()) {
+				statelist.add(rs1.getString("statename"));
+			}
+			userState.getItems().addAll(statelist);
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+	}
+
+	public void getUserLevel() {
+//		userState.getItems().clear();
+		userLevel.getItems().clear();
+		Connection con;
+		try {
+			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+			Statement stmt = con.createStatement();
+			ResultSet rs1 = stmt.executeQuery("select * from userlevel");
+
+			while (rs1.next()) {
+				levellist.add(rs1.getString("levelname"));
+			}
+			userLevel.getItems().addAll(levellist);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
+	public void createUser(ActionEvent event) {
 		String uname = userName.getText();
 		String pword = password.getText();
 		String cpword = confirmPassword.getText();
@@ -295,8 +317,22 @@ public class AdminDashboardController {
 		AddUserController addUserController = new AddUserController();
 		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name);
 	}
-	
-	
+
+	@FXML
+	void onClickClear(ActionEvent event) {
+		userName.setText("");
+		password.setText("");
+		confirmPassword.setText("");
+		emailId.setText("");
+		fullName.setText("");
+		dobdt.setText("");
+//		userState.setItems((ObservableList<String>) statelist);
+//		userLevel.setItems((ObservableList<String>) levellist);
+		userState.getItems().clear();
+		userLevel.getItems().clear();
+		getUserLevel();
+		getState();
+	}
 
 	@FXML
 	void logout(ActionEvent event) {

@@ -32,32 +32,34 @@ import model.ManageUsersModel;
 public class ManageUsersController implements Initializable{
 
 	@FXML
-	public TableView<ManageUsersModel> manageUsersTable;
+	public static TableView<ManageUsersModel> manageUsersTable;
 
 	@FXML
-	public TableColumn<ManageUsersModel, Integer> slnoColumn;
+	public static TableColumn<ManageUsersModel, Integer> slnoColumn;
 
 	@FXML
-	public TableColumn<ManageUsersModel, String> fullNameColumn;
+	public static TableColumn<ManageUsersModel, String> fullNameColumn;
 
 	@FXML
-	public TableColumn<ManageUsersModel, String> userNameColumn;
+	public static TableColumn<ManageUsersModel, String> userNameColumn;
 
 	@FXML
-	public TableColumn<ManageUsersModel, String> emailIdColumn;
+	public static TableColumn<ManageUsersModel, String> emailIdColumn;
 
 	@FXML
-	public TableColumn actionColumn;
+	public static TableColumn actionColumn;
 	
-	private Connection con;
+	private static Connection con;
 
-	public ObservableList<ManageUsersModel> dataList = FXCollections.observableArrayList();
+	public static ObservableList<ManageUsersModel> dataList = FXCollections.observableArrayList();
 
+//	@Override
+//	public void initialize(URL url, ResourceBundle rb) {
+//	   DbCon dbCon = new DbCon();
+//}
 	@Override
 	public void initialize(URL url, ResourceBundle rb) {
-	   DbCon dbCon = new DbCon();
-}
-	public void getUsers() {
+//	public static void getUsers() {
  
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
@@ -141,7 +143,7 @@ public class ManageUsersController implements Initializable{
 		
 	}
 	
-	public void refreshTable() {
+	public static void refreshTable() {
 		dataList.clear();
 		ManageUsersController mmController = new ManageUsersController();
 	}
