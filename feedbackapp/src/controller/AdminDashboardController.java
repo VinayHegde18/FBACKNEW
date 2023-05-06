@@ -125,14 +125,14 @@ public class AdminDashboardController{
 	@FXML
 	protected TableColumn<AllRequirementsModel, String> allReq1;
 
-//	@FXML
-//	public TableView<ArrayList<String>> allReqTable;
-//
-//	@FXML
-//	public TableColumn<ArrayList<String>, Integer> reqno;
-//
-//	@FXML
-//	public TableColumn<ArrayList<String>, String> allReq;
+	@FXML
+	public TableView<ArrayList<String>> allReqTable;
+
+	@FXML
+	public TableColumn<ArrayList<String>, Integer> reqno;
+
+	@FXML
+	public TableColumn<ArrayList<String>, String> allReq;
 
 	@FXML
 	protected TextField unameProfile;
@@ -170,6 +170,7 @@ public class AdminDashboardController{
     	try {
     		AllRequirementsController allRequirementsController = new AllRequirementsController();
 //    		allRequirementsController.loadData(allReqTable,reqno,allReq);
+    		allRequirementsController.initialize(null, null);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -19,33 +19,36 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.AllRequirementsModel;
 
-public class AllRequirementsController {
+public class AllRequirementsController implements Initializable {
 
+@FXML
+	public static TableView<AllRequirementsModel> allReqTable;
+@FXML
+	public static TableColumn<AllRequirementsModel, Integer> reqno;
+@FXML
+	public static TableColumn<AllRequirementsModel, String> allReq;
 
-	private static TableView<AllRequirementsModel> allReqTable;
+	public ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 
-	private static TableColumn<AllRequirementsModel, Integer> reqno;
-
-	private static TableColumn<AllRequirementsModel, String> allReq;
-
-	private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
-
-//	@Override
-//	public void initialize(URL url, ResourceBundle rb) {
+	@Override
+	public void initialize(URL url, ResourceBundle rb) {
 	
-	public AllRequirementsController() {
+//	public AllRequirementsController() {
 //   public void loadData(TableView<AllRequirementsModel> allReqTable, TableColumn<AllRequirementsModel, Integer> reqno, TableColumn<AllRequirementsModel, String> allReq) {
-	   
+	      
+		  TableView<AllRequirementsModel> allReqTable = new TableView();
+	      
+	      TableColumn<AllRequirementsModel,Integer> reqno = new TableColumn();
+	      TableColumn<AllRequirementsModel,String> allReq = new TableColumn();
 		try {
 			DbCon dbCon = new DbCon();
 			Statement stmt = dbCon.con.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select * from allreq");
+			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
 
 			while (rs.next()) {
 
 				dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
-
 			}
 			allReqTable.setItems(dataList);
 
