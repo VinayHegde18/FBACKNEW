@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ResourceBundle;
 
+import dbcon.DbCon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,24 +19,26 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.AllRequirementsModel;
 
-public class AllRequirementsController implements Initializable {
+public class AllRequirementsController {
 
-	@FXML
-	private TableView<AllRequirementsModel> allReqTable;
-	@FXML
-	private TableColumn<AllRequirementsModel, Integer> reqno;
-	@FXML
-	private TableColumn<AllRequirementsModel, String> allReq;
+
+	private static TableView<AllRequirementsModel> allReqTable;
+
+	private static TableColumn<AllRequirementsModel, Integer> reqno;
+
+	private static TableColumn<AllRequirementsModel, String> allReq;
 
 	private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 
-	@Override
-	public void initialize(URL url, ResourceBundle rb) {
-
-		Connection con;
+//	@Override
+//	public void initialize(URL url, ResourceBundle rb) {
+	
+	public AllRequirementsController() {
+//   public void loadData(TableView<AllRequirementsModel> allReqTable, TableColumn<AllRequirementsModel, Integer> reqno, TableColumn<AllRequirementsModel, String> allReq) {
+	   
 		try {
-			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-			Statement stmt = con.createStatement();
+			DbCon dbCon = new DbCon();
+			Statement stmt = dbCon.con.createStatement();
 
 			ResultSet rs = stmt.executeQuery("select * from allreq");
 

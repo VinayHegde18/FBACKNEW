@@ -11,6 +11,16 @@
 
 <AnchorPane fx:id="adminContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" stylesheets="@../css/admin.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminDashboardController">
    <children>
+      <AnchorPane fx:id="reqContainer" cache="true" focusTraversable="true" layoutX="288.0" layoutY="81.0" prefHeight="494.0" prefWidth="879.0">
+         <children>
+            <TableView fx:id="allReqTable" layoutX="14.0" layoutY="27.0" prefHeight="449.0" prefWidth="843.0">
+              <columns>
+                <TableColumn fx:id="reqno" prefWidth="158.0" text="SLNO" />
+                <TableColumn fx:id="allreq" minWidth="0.0" prefWidth="441.0" text="REQUIREMENTS" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
       <Label alignment="CENTER" layoutX="23.0" layoutY="14.0" prefHeight="47.0" prefWidth="292.0" text="ADMIN DASHBOARD" textFill="#b94141">
          <font>
             <Font size="27.0" />
@@ -70,16 +80,6 @@
          <children>
             <Label fx:id="authLabel" layoutX="15.0" layoutY="4.0" prefHeight="47.0" prefWidth="218.0" text="MANAGE AUTHENTICATION LEVELS" />
             <ChoiceBox fx:id="authLevelBox" layoutX="83.0" layoutY="95.0" nodeOrientation="LEFT_TO_RIGHT" opacity="0.62" prefHeight="35.0" prefWidth="235.0" />
-         </children>
-      </AnchorPane>
-      <AnchorPane fx:id="reqContainer" layoutX="288.0" layoutY="81.0" prefHeight="494.0" prefWidth="879.0">
-         <children>
-            <TableView fx:id="allReqTable" layoutX="14.0" layoutY="27.0" prefHeight="449.0" prefWidth="843.0">
-              <columns>
-                <TableColumn fx:id="reqno" prefWidth="158.0" text="SLNO" />
-                <TableColumn fx:id="allreq" minWidth="0.0" prefWidth="441.0" text="REQUIREMENTS" />
-              </columns>
-            </TableView>
          </children>
       </AnchorPane>
    </children>
