@@ -11,6 +11,7 @@ import java.sql.Statement;
 import java.util.Optional;
 
 import dbcon.DbCon;
+import jakarta.persistence.metamodel.StaticMetamodel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,6 +43,7 @@ public class controller {
     private Button exit;
 
 	static String uname ;
+	static String curUname;
 	String password;
 	
 	private Connection con;
@@ -65,7 +67,7 @@ public class controller {
 				.executeQuery("select * from users where del is null and username ='" + uname + "' and password='" + password + "'");
 //      while(rs.next()) {
 		if (rs.next() && uname.equalsIgnoreCase(rs.getString("username")) && password.equals(rs.getString("password"))) {
-//			uname = rs.getString("username");
+			curUname = rs.getString("username");
 			int level = rs.getInt("level");
 			if(level == 1) {	
 
@@ -106,6 +108,7 @@ public class controller {
 
 				controller2 controller2 = loader.getController();
 				controller2.setLabelText(uname);
+                controller2.getUserProfileDetails();
 				Scene scene = new Scene(root);
 				Stage loginStage = new Stage();
 				loginStage.setScene(scene);
@@ -114,6 +117,7 @@ public class controller {
 
 				loginStage.show();
 			} catch (IOException e) {
+				e.printStackTrace();
 				System.err.println(String.format("Error: %s", e.getMessage()));
 			}
 			}
@@ -137,7 +141,6 @@ public class controller {
 			    	  newstage.setScene(scene);
 			    	  newstage.show();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 		      }

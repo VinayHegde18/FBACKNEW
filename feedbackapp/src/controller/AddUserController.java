@@ -75,36 +75,7 @@ public class AddUserController {
 	@FXML
 	private Button closeButton;
 
-//	public AddUserController() {
-//
-//		try {
-//			Connection con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-//			Statement stmt = con.createStatement();
-//
-//			ResultSet rs = stmt.executeQuery("select username from users where del is null");
-//			while (rs.next()) {
-//
-//			}
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//	}
-
-
-	public static void onClickCreateUser(String uname,String pword,String cpword,String emailStr,String name) {
-//		String uname = userName.getText();
-//		String pword = password.getText();
-//		String cpword = confirmPassword.getText();
-//		String emailStr = emailId.getText();
-//		String name = fullName.getText();
-		
-
-//		SecureRandom random = new SecureRandom();
-//		byte[] salt = new byte[16];
-//		random.nextBytes(salt);
-//		KeySpec spec = new PBEKeySpec(pword.toCharArray(), salt, 65536, 128);
-//		SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-//		byte[] hash = factory.generateSecret(spec).getEncoded();
+	public static void onClickCreateUser(String uname,String pword,String cpword,String emailStr,String name,int uLevel, String uState) {
 
 		Connection con;
 		try {
@@ -119,11 +90,15 @@ public class AddUserController {
 			}
 
 			else {
-				int result = stmt.executeUpdate("insert into users(name,email,username,password,cpassword) values ('"
-						+ name + "','" + emailStr + "','" + uname + "','" + pword + "','" + cpword + "')");
+				int result = stmt.executeUpdate("insert into users(name,email,username,password,cpassword,level,userstate) values ('"
+						+ name + "','" + emailStr + "','" + uname + "','" + pword + "','" + cpword + "','" + uLevel + "','" + uState + "')");
 
 				if (result == 1) {
-                     System.out.println("inserted successfully");
+					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+					newAlert.setContentText("User created Successfully");
+					newAlert.show();
+					AdminDashboardController adminDashboardController = new AdminDashboardController();
+					adminDashboardController.onClickClear(null);
 				}
 			}
 		} catch (SQLException e) {
@@ -131,41 +106,5 @@ public class AddUserController {
 			e.printStackTrace();
 		}
 	}
-
-//	public static void onClickClear() {
-//		
-//		userName.setText("");
-//		password.setText("");
-//		confirmPassword.setText("");
-//		emailId.setText("");
-//		fullName.setText("");
-//		dobdt.setText("");
-//		userLevel.setText("Select Userlevel");
-//		userCountry.setText("Select Country");
-//	}
-
-//	@FXML
-//	void close(ActionEvent event) {
-//		Alert alert = new Alert(AlertType.CONFIRMATION);
-//		alert.setContentText("Are You sure?");
-//		Optional<ButtonType> option = alert.showAndWait();
-//
-//		if (option.get().equals(ButtonType.OK)) {
-//			try {
-//				Node node = (Node) event.getSource();
-//				Stage stage = (Stage) node.getScene().getWindow();
-//				stage.close();
-//				FXMLLoader newloader3 = new FXMLLoader(getClass().getResource("/view/admindashboard.fxml"));
-//				Pane root3;
-//				root3 = newloader3.load();
-//				Stage adminstage = new Stage();
-//				Scene scene = new Scene(root3);
-//				adminstage.setScene(scene);
-//				adminstage.show();
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//		}
-//	}
 
 }

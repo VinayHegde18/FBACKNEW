@@ -36,7 +36,21 @@
          </children></AnchorPane>
       <AnchorPane fx:id="profileContainer" layoutX="288.0" layoutY="81.0" prefHeight="481.0" prefWidth="843.0" visible="false">
          <children>
-            <TextField fx:id="unameProfile" layoutX="49.0" layoutY="61.0" prefHeight="47.0" prefWidth="192.0" />
+            <TextField fx:id="fullNameProfile" layoutX="184.0" layoutY="61.0" prefHeight="47.0" prefWidth="601.0" />
+            <TextField fx:id="userPasswordProfile" layoutX="593.0" layoutY="133.0" prefHeight="47.0" prefWidth="192.0" />
+            <TextField fx:id="userNameProfile" layoutX="184.0" layoutY="133.0" prefHeight="47.0" prefWidth="192.0" />
+            <TextField fx:id="emailIdProfile" layoutX="184.0" layoutY="207.0" prefHeight="47.0" prefWidth="192.0" />
+            <TextField fx:id="userStateProfile" layoutX="593.0" layoutY="208.0" prefHeight="47.0" prefWidth="192.0" />
+            <Button fx:id="updateUser" layoutX="456.0" layoutY="343.0" mnemonicParsing="false" onAction="#onClickUpdateUser" prefHeight="38.0" prefWidth="192.0" text="UPDATE">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Button>
+            <Label alignment="CENTER" layoutX="47.0" layoutY="70.0" prefHeight="28.0" prefWidth="113.0" text="FULL NAME" />
+            <Label alignment="CENTER" layoutX="47.0" layoutY="143.0" prefHeight="28.0" prefWidth="113.0" text="USERNAME" />
+            <Label alignment="CENTER" layoutX="48.0" layoutY="217.0" prefHeight="28.0" prefWidth="113.0" text="EMAIL ID" />
+            <Label alignment="CENTER" layoutX="439.0" layoutY="143.0" prefHeight="28.0" prefWidth="113.0" text="PASSWORD" />
+            <Label alignment="CENTER" layoutX="439.0" layoutY="217.0" prefHeight="28.0" prefWidth="113.0" text="STATE" />
          </children>
       </AnchorPane>
       <AnchorPane fx:id="rightContainer1" layoutX="296.0" layoutY="91.0" prefHeight="494.0" prefWidth="864.0" visible="false">
