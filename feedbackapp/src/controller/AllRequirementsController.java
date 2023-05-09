@@ -19,27 +19,21 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.AllRequirementsModel;
 
-public class AllRequirementsController implements Initializable {
+public class AllRequirementsController{
 
-@FXML
-	public static TableView<AllRequirementsModel> allReqTable;
-@FXML
-	public static TableColumn<AllRequirementsModel, Integer> reqno;
-@FXML
-	public static TableColumn<AllRequirementsModel, String> allReq;
 
+	@FXML
+	private TableView<AllRequirementsModel> allReqTable;
+
+	@FXML
+	private TableColumn<AllRequirementsModel, Integer> reqno;
+
+	@FXML
+	private TableColumn<AllRequirementsModel, String> allReq;
+	
 	public ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 
-	@Override
-	public void initialize(URL url, ResourceBundle rb) {
-	
-//	public AllRequirementsController() {
-//   public void loadData(TableView<AllRequirementsModel> allReqTable, TableColumn<AllRequirementsModel, Integer> reqno, TableColumn<AllRequirementsModel, String> allReq) {
-	      
-		  TableView<AllRequirementsModel> allReqTable = new TableView();
-	      
-	      TableColumn<AllRequirementsModel,Integer> reqno = new TableColumn();
-	      TableColumn<AllRequirementsModel,String> allReq = new TableColumn();
+public void getUserProfileDetails() {
 		try {
 			DbCon dbCon = new DbCon();
 			Statement stmt = dbCon.con.createStatement();

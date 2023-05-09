@@ -93,8 +93,8 @@ public class SignUpController {
 
 					Pane root = loader.load();
 
-					controller2 controller2 = loader.getController();
-					controller2.setLabelText(uname);
+					UserDashboardController UserDashboardController = loader.getController();
+					UserDashboardController.setLabelText(uname);
 					Scene scene = new Scene(root);
 					Stage loginStage = new Stage();
 					loginStage.setScene(scene);

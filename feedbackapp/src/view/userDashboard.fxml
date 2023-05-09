@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.Glow?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1141.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controller2">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1141.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UserDashboardController">
    <children>
+      <AnchorPane fx:id="userContainer" layoutX="22.0" layoutY="91.0" prefHeight="489.0" prefWidth="241.0" style="-fx-background-color: lightblue;" />
       <Label fx:id="wlcometxt" alignment="CENTER" layoutX="617.0" layoutY="21.0" prefHeight="31.0" prefWidth="298.0" text="Label" textFill="#cf9234">
          <font>
             <Font size="20.0" />
          </font></Label>
-      <Label fx:id="headerText" alignment="CENTER" contentDisplay="CENTER" layoutX="31.0" layoutY="36.0" prefHeight="57.0" prefWidth="426.0" text="TSS LTD, SIRSI" textAlignment="CENTER" textFill="#9ebf30">
+      <Label fx:id="headerText" alignment="CENTER" contentDisplay="CENTER" layoutX="31.0" layoutY="25.0" prefHeight="57.0" prefWidth="426.0" text="TSS LTD, SIRSI" textAlignment="CENTER" textFill="#9ebf30">
          <font>
             <Font size="38.0" />
          </font>
       </Label>
-      <Button fx:id="postButton" layoutX="41.0" layoutY="191.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="203.0" text="Post Requirements" />
-      <Button fx:id="allReqButton" layoutX="41.0" layoutY="280.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="203.0" text="ALL REQUIREMENTS" />
-      <Button fx:id="yourReqButton" layoutX="41.0" layoutY="367.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="203.0" text="YOUR REQUIREMENTS" />
-      <Button fx:id="logoutButton" layoutX="865.0" layoutY="60.0" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="40.0" prefWidth="121.0" text="LOGOUT" textFill="#b54444" />
+      <Button fx:id="postButton" layoutX="41.0" layoutY="191.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="Post Requirements" />
+      <Button fx:id="allReqButton" layoutX="41.0" layoutY="280.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="ALL REQUIREMENTS" />
+      <Button fx:id="yourReqButton" layoutX="41.0" layoutY="367.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="YOUR REQUIREMENTS" />
+      <Button fx:id="logoutButton" layoutX="1006.0" layoutY="17.0" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="40.0" prefWidth="121.0" text="LOGOUT" textFill="#b54444" />
       <AnchorPane fx:id="profileContainer" layoutX="298.0" layoutY="113.0" prefHeight="481.0" prefWidth="843.0" visible="false">
          <children>
             <TextField fx:id="fullNameProfile" layoutX="184.0" layoutY="61.0" prefHeight="47.0" prefWidth="601.0" />
@@ -37,5 +43,49 @@
          </children>
       </AnchorPane>
       <Button fx:id="profileBtn" layoutX="41.0" layoutY="115.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="profile" />
+      <AnchorPane fx:id="postContainer" layoutX="286.0" layoutY="111.0" prefHeight="481.0" prefWidth="843.0" visible="false">
+         <children>
+            <Button fx:id="postReq" layoutX="661.0" layoutY="55.0" mnemonicParsing="false" onAction="#postRequirements" prefHeight="54.0" prefWidth="132.0" text="Submit" textAlignment="CENTER" textFill="#b2ad48">
+               <font>
+                  <Font size="23.0" />
+               </font>
+            </Button>
+            <DatePicker layoutX="470.0" layoutY="68.0" />
+            <Label alignment="CENTER" contentDisplay="CENTER" layoutX="26.0" layoutY="14.0" prefHeight="49.0" prefWidth="374.0" text="Post Requirements" underline="true">
+               <font>
+                  <Font size="37.0" />
+               </font>
+               <effect>
+                  <Glow />
+               </effect>
+            </Label>
+            <TextArea fx:id="postText" layoutX="14.0" layoutY="124.0" prefHeight="344.0" prefWidth="786.0" promptText="Write your requirements here...">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextArea>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="reqContainer" layoutX="263.0" layoutY="111.0" prefHeight="474.0" prefWidth="843.0" visible="false">
+         <children>
+            <TableView fx:id="allReqTable" layoutX="41.0" layoutY="51.0" prefHeight="409.0" prefWidth="786.0">
+              <columns>
+                <TableColumn fx:id="reqno" prefWidth="75.0" text="SLNO" />
+                <TableColumn fx:id="allReq" prefWidth="710.0" text="REQUIREMENTS" />
+              </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="yourReqContainer" layoutX="273.0" layoutY="121.0" prefHeight="474.0" prefWidth="843.0" visible="false">
+         <children>
+            <TableView fx:id="yourReqTable" layoutX="41.0" layoutY="51.0" prefHeight="409.0" prefWidth="786.0">
+               <columns>
+                  <TableColumn fx:id="yreqno" prefWidth="94.0" text="SLNO" />
+                  <TableColumn fx:id="yreq" prefWidth="521.0" text="REQUIREMENTS" />
+                  <TableColumn fx:id="actionCol" prefWidth="170.0" text="ACTION" />
+               </columns>
+            </TableView>
+         </children>
+      </AnchorPane>
    </children>
 </Pane>

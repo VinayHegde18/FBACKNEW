@@ -186,7 +186,7 @@ public class AdminDashboardController {
 		try {
 			AllRequirementsController allRequirementsController = new AllRequirementsController();
 			// allRequirementsController.loadData(allReqTable,reqno,allReq);
-			allRequirementsController.initialize(null, null);
+//			allRequirementsController.initialize(null, null);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -401,9 +401,6 @@ public class AdminDashboardController {
 		int uLevel = Integer.parseInt(uLevelString);
 
 		String uState = userState.getItems().get(0);
-
-		@SuppressWarnings("unused")
-		AddUserController addUserController = new AddUserController();
 
 		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name, uLevel, uState);
 	}

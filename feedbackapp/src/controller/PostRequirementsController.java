@@ -13,26 +13,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 
 public class PostRequirementsController {
-	  @FXML
-	   private TextArea postText;
-	  @FXML
-	   private Button postReq;
 
-	   String textBox;
-	   controller controller = new controller();
-		String uname = controller.uname;
-
-      @FXML
-	   public void postRequirements(ActionEvent Event) throws SQLException {
-
-		   textBox = postText.getText();
-		   String username = uname;
+	   public static void postRequirements(String reqText) throws SQLException {
+		   String username = controller.curUname;
 		   LocalDate date = LocalDate.now();
 		   Connection con;
 		   con = DriverManager.getConnection("jdbc:mysql://localhost/java","root","");
 		   java.sql.Statement stmt = con.createStatement();
 
-		   int rs = stmt.executeUpdate("insert into allreq(req,username,date) values('"+textBox+"','"+username+"','"+date+"')");
+		   int rs = stmt.executeUpdate("insert into allreq(req,username,date) values('"+reqText+"','"+username+"','"+date+"')");
 
 		   if(rs > 0) {
 			   Alert alert = new Alert(AlertType.INFORMATION);

@@ -1,8 +1,8 @@
 package model;
 
 public class AllRequirementsModel {
-   public static int reqno;
-   public static String req;
+   public int reqno;
+   public String req;
 
 	public AllRequirementsModel(int reqno, String req) {
 		this.reqno = reqno;
