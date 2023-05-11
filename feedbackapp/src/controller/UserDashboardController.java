@@ -112,12 +112,15 @@ public class UserDashboardController {
 	
 	public String loggedinUname = controller.curUname;
 
-	public static Statement stmt;
+
 	
 	public ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 	
 	public ObservableList<YourRequirementsModel> dataList2 = FXCollections.observableArrayList();
 
+//	DbCon dbCon = new DbCon();
+	
+	public static Statement stmt;
 
 	public void setLabelText(String text) {
 		wlcometxt.setText("Welcome " + text);
@@ -150,6 +153,7 @@ public class UserDashboardController {
 			reqContainer.setVisible(false);
 			yourReqContainer.setVisible(false);
 			postContainer.setVisible(true);
+			postText.setText("");
 
 		} else if (event.getSource() == yourReqButton) {
 
@@ -171,6 +175,7 @@ public class UserDashboardController {
     	try {
     		
 			PostRequirementsController.postRequirements(reqText);
+			postText.setText("");
 			
 		} catch (SQLException e) {
 
@@ -210,8 +215,7 @@ public class UserDashboardController {
 	public void AllRequirements() {
 			try {
 				DbCon dbCon = new DbCon();
-				Statement stmt = dbCon.con.createStatement();
-
+				stmt = dbCon.con.createStatement();
 				ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
 
 				while (rs.next()) {
@@ -231,7 +235,7 @@ public class UserDashboardController {
 	public void yourRequirements() {
 		try {
 			DbCon dbCon = new DbCon();
-			Statement stmt = dbCon.con.createStatement();
+			stmt = dbCon.con.createStatement();
 
 			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null and username='" + loggedinUname + "'");
 
@@ -270,10 +274,9 @@ public class UserDashboardController {
 							alert.setContentText("Are You sure You want to delete this requirement?");
 							Optional<ButtonType> option = alert.showAndWait();
 							if (option.get().equals(ButtonType.OK)) {
-							Connection con;
 							try {
-								con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-								Statement stmt = con.createStatement();
+								DbCon dbCon = new DbCon();
+								stmt = dbCon.con.createStatement();
 								int result = stmt.executeUpdate("update allreq set mrk='d' where reqno='" + reqno + "'");
 								if (result == 1) {
 									Alert newAlert = new Alert(Alert.AlertType.INFORMATION);

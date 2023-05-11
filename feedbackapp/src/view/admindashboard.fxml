@@ -11,16 +11,6 @@
 
 <AnchorPane fx:id="adminContainer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1200.0" stylesheets="@../css/admin.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AdminDashboardController">
    <children>
-      <AnchorPane fx:id="reqContainer" cache="true" focusTraversable="true" layoutX="288.0" layoutY="81.0" prefHeight="494.0" prefWidth="879.0">
-         <children>
-            <TableView fx:id="allReqTable" layoutX="14.0" layoutY="27.0" prefHeight="449.0" prefWidth="843.0">
-              <columns>
-                <TableColumn fx:id="reqno" prefWidth="158.0" text="SLNO" />
-                <TableColumn fx:id="allreq" minWidth="0.0" prefWidth="441.0" text="REQUIREMENTS" />
-              </columns>
-            </TableView>
-         </children>
-      </AnchorPane>
       <Label alignment="CENTER" layoutX="23.0" layoutY="14.0" prefHeight="47.0" prefWidth="292.0" text="ADMIN DASHBOARD" textFill="#b94141">
          <font>
             <Font size="27.0" />
@@ -77,17 +67,17 @@
       </AnchorPane>
       <TableView fx:id="manageUsersTable" layoutX="278.0" layoutY="121.0" prefHeight="435.0" prefWidth="909.0" visible="false">
          <columns>
-            <TableColumn fx:id="slnoColumn" prefWidth="43.0" text="SLNO" />
+            <TableColumn fx:id="slnoColum" prefWidth="43.0" text="SLNO" />
             <TableColumn fx:id="fullNameColumn" prefWidth="235.0" text="FULL NAME" />
             <TableColumn fx:id="userNameColumn" prefWidth="164.0" text="USERNAME" />
             <TableColumn fx:id="emailIdColumn" prefWidth="172.0" text="EMAIL ID" />
             <TableColumn fx:id="actionColumn" prefWidth="513.0" text="ACTION" />
          </columns>
       </TableView>
-      <TableView fx:id="allReqTable1" layoutX="278.0" layoutY="120.0" prefHeight="460.0" prefWidth="909.0" visible="false">
+      <TableView fx:id="allReqTable" layoutX="278.0" layoutY="120.0" prefHeight="460.0" prefWidth="909.0" visible="false">
          <columns>
-            <TableColumn fx:id="reqno1" prefWidth="75.0" text="REQ NO." />
-            <TableColumn fx:id="allReq1" prefWidth="649.0" text="REQUIREMENTS" />
+            <TableColumn fx:id="reqno" prefWidth="75.0" text="REQ NO." />
+            <TableColumn fx:id="allReq" prefWidth="649.0" text="REQUIREMENTS" />
          </columns>
       </TableView>
       <AnchorPane fx:id="authPanel" layoutX="306.0" layoutY="135.0" prefHeight="435.0" prefWidth="854.0" visible="false">

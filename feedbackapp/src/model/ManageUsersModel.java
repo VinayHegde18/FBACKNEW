@@ -2,10 +2,10 @@ package model;
 
 
 public class ManageUsersModel {
-	int userId;
-	String fullName;
-	String userName;
-	String emailId;
+	public int userId;
+	public String fullName;
+	public String userName;
+	public String emailId;
 
 	public ManageUsersModel(int userId, String fullName, String userName, String emailId) {
 		this.userId = userId;
@@ -15,11 +15,11 @@ public class ManageUsersModel {
 		
 	}
 
-	public int getuserId() {
+	public int getUserId() {
 		return userId;
 	}
 
-	public void setuserId(int userId) {
+	public void setUserId(int userId) {
 		this.userId = userId;
 	}
 
@@ -30,6 +30,7 @@ public class ManageUsersModel {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
+
 	public String getUserName() {
 		return userName;
 	}
@@ -37,6 +38,7 @@ public class ManageUsersModel {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
+
 	public String getEmailId() {
 		return emailId;
 	}
@@ -44,4 +46,34 @@ public class ManageUsersModel {
 	public void setEmailId(String emailId) {
 		this.emailId = emailId;
 	}
+
+//	public int getuserId() {
+//		return userId;
+//	}
+//
+//	public void setuserId(int userId) {
+//		this.userId = userId;
+//	}
+//
+//	public String getFullName() {
+//		return fullName;
+//	}
+//
+//	public void setFullName(String fullName) {
+//		this.fullName = fullName;
+//	}
+//	public String getUserName() {
+//		return userName;
+//	}
+//
+//	public void setUserName(String userName) {
+//		this.userName = userName;
+//	}
+//	public String getEmailId() {
+//		return emailId;
+//	}
+//
+//	public void setEmailId(String emailId) {
+//		this.emailId = emailId;
+//	}
 }

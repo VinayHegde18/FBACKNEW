@@ -1,29 +1,30 @@
 package controller;
 
-import java.net.URI;
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.ResourceBundle;
+import java.util.Optional;
 
 import dbcon.DbCon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.util.Callback;
 import model.AllRequirementsModel;
 import model.ManageUsersModel;
 
@@ -55,14 +56,14 @@ public class AdminDashboardController {
 	@FXML
 	protected AnchorPane rightContainer;
 
-//	    @FXML
-//	    public TableView<AllRequirementsModel> allReqTable;
-//
-//	    @FXML
-//	    public TableColumn<AllRequirementsModel, Integer> reqno;
-//
-//	    @FXML
-//	    public TableColumn<AllRequirementsModel, String> allReq;
+	@FXML
+	public TableView<AllRequirementsModel> allReqTable;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, Integer> reqno;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, String> allReq;
 
 	@FXML
 	protected AnchorPane rightContainer1;
@@ -101,7 +102,7 @@ public class AdminDashboardController {
 	protected TableView<ManageUsersModel> manageUsersTable;
 
 	@FXML
-	protected TableColumn<ManageUsersModel, Integer> slnoColumn;
+	public TableColumn<ManageUsersModel, Integer> slnoColum;
 
 	@FXML
 	protected TableColumn<ManageUsersModel, String> fullNameColumn;
@@ -115,24 +116,6 @@ public class AdminDashboardController {
 	@SuppressWarnings("rawtypes")
 	@FXML
 	protected TableColumn actionColumn;
-
-	@FXML
-	protected TableView<AllRequirementsModel> allReqTable1;
-
-	@FXML
-	protected TableColumn<AllRequirementsModel, Integer> reqno1;
-
-	@FXML
-	protected TableColumn<AllRequirementsModel, String> allReq1;
-
-	@FXML
-	public TableView<ArrayList<String>> allReqTable;
-
-	@FXML
-	public TableColumn<ArrayList<String>, Integer> reqno;
-
-	@FXML
-	public TableColumn<ArrayList<String>, String> allReq;
 
 	@FXML
 	protected TextField unameProfile;
@@ -181,18 +164,11 @@ public class AdminDashboardController {
 
 	ArrayList<String> levellist = new ArrayList<>();
 
-	public AdminDashboardController() {
+	public static ObservableList<ManageUsersModel> usersList = FXCollections.observableArrayList();
 
-		try {
-			AllRequirementsController allRequirementsController = new AllRequirementsController();
-			// allRequirementsController.loadData(allReqTable,reqno,allReq);
-//			allRequirementsController.initialize(null, null);
+	public static ObservableList<AllRequirementsModel> reqList = FXCollections.observableArrayList();
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
+	public static Statement stmt;
 
 	@FXML
 	void onSelectChangeView(ActionEvent event) {
@@ -205,11 +181,9 @@ public class AdminDashboardController {
 
 			manageUsersTable.setVisible(false);
 
-			allReqTable1.setVisible(false);
+			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-
-			reqContainer.setVisible(false);
 
 			getProfileDetails();
 
@@ -222,11 +196,9 @@ public class AdminDashboardController {
 
 			manageUsersTable.setVisible(false);
 
-			allReqTable1.setVisible(false);
+			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-
-			reqContainer.setVisible(false);
 
 			levellist.clear();
 			statelist.clear();
@@ -243,18 +215,15 @@ public class AdminDashboardController {
 
 			manageUsersTable.setVisible(true);
 
-			allReqTable1.setVisible(false);
+			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-
-			reqContainer.setVisible(false);
-
-			FXMLLoader loader = new FXMLLoader();
-//			Object controller = loader.getController();
-
-			@SuppressWarnings("unused")
-			ManageUsersController manageUsersController = loader.getController();
-//			ManageUsersController.getUsers();
+			
+			usersList.clear();
+			
+			manageUsersTable.getItems().clear();
+			
+			manageUsers();
 
 		}
 
@@ -266,12 +235,15 @@ public class AdminDashboardController {
 
 			manageUsersTable.setVisible(false);
 
-			allReqTable1.setVisible(true);
+			allReqTable.setVisible(true);
 
 			authPanel.setVisible(false);
 
-			reqContainer.setVisible(false);
-//		    		 AllRequirementsController AllRequirementsController = new AllRequirementsController();
+			reqList.clear();
+			
+			allReqTable.getItems().clear();
+
+			AllRequirements();
 		}
 
 		else if (event.getSource() == authLevel) {
@@ -282,28 +254,27 @@ public class AdminDashboardController {
 
 			manageUsersTable.setVisible(false);
 
-			allReqTable1.setVisible(false);
+			allReqTable.setVisible(false);
 
 			authPanel.setVisible(true);
 
-			reqContainer.setVisible(false);
 
-			try {
-				DbCon dbCon = new DbCon();
-				Statement stmt = dbCon.con.createStatement();
-
-				ResultSet rs = stmt.executeQuery("select * from authtbl");
-
-				while (rs.next()) {
-
-					list.add(rs.getString("authname"));
-				}
-				authLevelBox.getItems().addAll(list);
-
-			} catch (SQLException e) {
-
-				e.printStackTrace();
-			}
+//			try {
+//				DbCon dbCon = new DbCon();
+//				Statement stmt = dbCon.con.createStatement();
+//
+//				ResultSet rs = stmt.executeQuery("select * from authtbl");
+//
+//				while (rs.next()) {
+//
+//					list.add(rs.getString("authname"));
+//				}
+//				authLevelBox.getItems().addAll(list);
+//
+//			} catch (SQLException e) {
+//
+//				e.printStackTrace();
+//			}
 		}
 	}
 
@@ -352,17 +323,18 @@ public class AdminDashboardController {
 	}
 
 	public void getProfileDetails() {
-		
+
 		DbCon dbCon = new DbCon();
-		
+
 		String loggedinUname = controller.curUname;
-		
+
 		Statement stmt;
-		
+
 		try {
 			stmt = dbCon.con.createStatement();
-			
-			ResultSet profileRs = stmt.executeQuery("select * from users where del is null and username='" + loggedinUname + "'");
+
+			ResultSet profileRs = stmt
+					.executeQuery("select * from users where del is null and username='" + loggedinUname + "'");
 
 			while (profileRs.next()) {
 
@@ -376,11 +348,117 @@ public class AdminDashboardController {
 
 				userStateProfile.setText(profileRs.getString("userstate"));
 			}
-			
+
 		} catch (SQLException e) {
-			
+
 			e.printStackTrace();
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void manageUsers() {
+		DbCon dbCon = new DbCon();
+
+		try {
+			Statement stmt = dbCon.con.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from users where del is null");
+
+			while (rs.next()) {
+
+				usersList.add(new ManageUsersModel(rs.getInt("userid"), rs.getString("name"), rs.getString("username"),
+						rs.getString("email")));
+			}
+			manageUsersTable.setItems(usersList);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+//			System.err.println(String.format("Error: %s", e.getMessage()));
+		}
+		slnoColum.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, Integer>("userId"));
+		fullNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("fullName"));
+		userNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("userName"));
+		emailIdColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("emailId"));
+
+		Callback<TableColumn<ManageUsersModel, String>, TableCell<ManageUsersModel, String>> cellfactory = (param) -> {
+
+			final TableCell<ManageUsersModel, String> cell = new TableCell<ManageUsersModel, String>() {
+
+				@Override
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (empty) {
+						setGraphic(null);
+						setText(null);
+					} else {
+						final Button deleteButton = new Button("Delete");
+						deleteButton.setOnAction(event -> {
+							ManageUsersModel m = getTableView().getItems().get(getIndex());
+							int userId = m.getUserId();
+
+							if (userId != 1) {
+
+								Alert alert = new Alert(AlertType.CONFIRMATION);
+								alert.setContentText("Are You sure You want to delete this user?");
+								Optional<ButtonType> option = alert.showAndWait();
+								if (option.get().equals(ButtonType.OK)) {
+									Connection con;
+									try {
+										con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
+										Statement stmt = con.createStatement();
+										int result = stmt.executeUpdate(
+												"update users set del='d' where userid='" + userId + "'");
+										if (result == 1) {
+											Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+											newAlert.setContentText("deleted user");
+											newAlert.show();
+											refreshTable();
+										}
+									} catch (SQLException e) {
+										e.printStackTrace();
+									}
+								}
+							} else {
+								Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+								newAlert.setContentText("Cannot delete Admin");
+								newAlert.show();
+							}
+						});
+						setGraphic(deleteButton);
+						setText(null);
+
+					}
+				}
+
+			};
+
+			return cell;
+		};
+
+		actionColumn.setCellFactory(cellfactory);
+	}
+
+	public void AllRequirements() {
+		try {
+			
+			DbCon dbCon = new DbCon();
+			
+			stmt = dbCon.con.createStatement();
+			
+			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
+
+			while (rs.next()) {
+
+				reqList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
+			}
+			allReqTable.setItems(reqList);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(String.format("Error: %s", e.getMessage()));
+		}
+		reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
+		allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
 	}
 
 	@FXML
@@ -430,12 +508,11 @@ public class AdminDashboardController {
 
 	@FXML
 	void onClickUpdateUser(ActionEvent event) {
-		
+
 		DbCon dbCon = new DbCon();
-		Statement stmt;
+		
 		try {
 			stmt = dbCon.con.createStatement();
-			
 
 			ResultSet rs2 = stmt.executeQuery("select * from userlevel");
 
@@ -444,10 +521,15 @@ public class AdminDashboardController {
 				levellist.add(rs2.getString("levelid"));
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+	}
+
+	public void refreshTable() {
+		usersList.clear();
+		manageUsersTable.getItems().clear();
+		manageUsers();
 	}
 
 	@FXML

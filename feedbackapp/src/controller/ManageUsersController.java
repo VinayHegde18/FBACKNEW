@@ -97,7 +97,7 @@ public class ManageUsersController implements Initializable{
 						final Button deleteButton = new Button("Delete");
 						deleteButton.setOnAction(event -> {
 							ManageUsersModel m = getTableView().getItems().get(getIndex());
-							int userId = m.getuserId();
+							int userId = m.getUserId();
 							
 							if(userId!=1) {
 							
