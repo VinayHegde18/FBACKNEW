@@ -1,5 +1,6 @@
 package controller;
 
+import java.awt.Event;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -81,7 +82,7 @@ public class AddUserController {
 		try {
 			con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
 			Statement stmt = con.createStatement();
-			ResultSet rs = stmt.executeQuery("select * from users where username ='" + uname + "'");
+			ResultSet rs = stmt.executeQuery("select * from users where del is null and username ='" + uname + "'");
 
 			if (rs.next()) {
 				Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -97,14 +98,26 @@ public class AddUserController {
 					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
 					newAlert.setContentText("User created Successfully");
 					newAlert.show();
-					AdminDashboardController adminDashboardController = new AdminDashboardController();
-					adminDashboardController.onClickClear(null);
 				}
 			}
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
+	
+//	public void clearUserFields() {
+//		userName.setText("");
+//
+//		password.setText("");
+//
+//		confirmPassword.setText("");
+//
+//		emailId.setText("");
+//
+//		fullName.setText("");
+//
+//		dobdt.setText("");
+//
+//	}
 
 }

@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -10,20 +11,28 @@ import java.util.Optional;
 
 import dbcon.DbCon;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.AccessibleAttribute;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.AllRequirementsModel;
 import model.ManageUsersModel;
@@ -112,6 +121,9 @@ public class AdminDashboardController {
 
 	@FXML
 	protected TableColumn<ManageUsersModel, String> emailIdColumn;
+	
+	@FXML
+	private TextArea textfld;
 
 	@SuppressWarnings("rawtypes")
 	@FXML
@@ -378,7 +390,7 @@ public class AdminDashboardController {
 		fullNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("fullName"));
 		userNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("userName"));
 		emailIdColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("emailId"));
-
+		
 		Callback<TableColumn<ManageUsersModel, String>, TableCell<ManageUsersModel, String>> cellfactory = (param) -> {
 
 			final TableCell<ManageUsersModel, String> cell = new TableCell<ManageUsersModel, String>() {
@@ -394,6 +406,7 @@ public class AdminDashboardController {
 						final Button deleteButton = new Button("Delete");
 						deleteButton.setOnAction(event -> {
 							ManageUsersModel m = getTableView().getItems().get(getIndex());
+							System.out.println(m.toString());
 							int userId = m.getUserId();
 
 							if (userId != 1) {
@@ -402,10 +415,9 @@ public class AdminDashboardController {
 								alert.setContentText("Are You sure You want to delete this user?");
 								Optional<ButtonType> option = alert.showAndWait();
 								if (option.get().equals(ButtonType.OK)) {
-									Connection con;
 									try {
-										con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-										Statement stmt = con.createStatement();
+										    DbCon dbCon = new DbCon();
+											Statement stmt = dbCon.con.createStatement();
 										int result = stmt.executeUpdate(
 												"update users set del='d' where userid='" + userId + "'");
 										if (result == 1) {
@@ -436,6 +448,10 @@ public class AdminDashboardController {
 		};
 
 		actionColumn.setCellFactory(cellfactory);
+		
+        
+
+		
 	}
 
 	public void AllRequirements() {
@@ -459,7 +475,44 @@ public class AdminDashboardController {
 		}
 		reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
 		allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
+		selectCourse();
+
 	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public void selectCourse(){                     
+	    allReqTable.getSelectionModel().setCellSelectionEnabled(true);
+	    ObservableList selectedCells = allReqTable.getSelectionModel().getSelectedCells();
+	      selectedCells.addListener(new ListChangeListener() {
+	    	  
+	      @Override
+	      public void onChanged(Change c) {
+	       if(!selectedCells.isEmpty()) {
+	        TablePosition tablePositionOne = (TablePosition) selectedCells.get(0);
+	        Object val = tablePositionOne.getTableColumn().getCellData(tablePositionOne.getRow());
+	        String text11= val.toString();
+	                 try {
+	        				FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/ViewRequirement.fxml"));
+	        	
+	        				Parent root2 = newloader.load();
+	        				ViewRequirementController viewRequirementController =newloader.getController();
+	        				viewRequirementController.setTexts(text11);
+	        				
+	        				Scene scene = new Scene(root2);
+	        				Stage newstage = new Stage();
+	        				newstage.setResizable(false);
+	        				newstage.setScene(scene);
+	        				newstage.show();
+	        				
+	        			} catch (IOException e) {
+	        				
+	        				e.printStackTrace();
+	        				System.err.println(String.format("Error: %s", e.getMessage()));
+	        			}
+	      }
+	      }
+	    });
+	  }
 
 	@FXML
 	public void createUser(ActionEvent event) {
@@ -481,6 +534,7 @@ public class AdminDashboardController {
 		String uState = userState.getItems().get(0);
 
 		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name, uLevel, uState);
+		clearUsersFields();
 	}
 
 	@FXML
@@ -530,6 +584,25 @@ public class AdminDashboardController {
 		usersList.clear();
 		manageUsersTable.getItems().clear();
 		manageUsers();
+	}
+	public void clearUsersFields() {
+		userName.setText("");
+
+		password.setText("");
+
+		confirmPassword.setText("");
+
+		emailId.setText("");
+
+		fullName.setText("");
+
+		dobdt.setText("");
+
+		levellist.clear();
+		statelist.clear();
+
+		getState();
+		getUserLevel();
 	}
 
 	@FXML
