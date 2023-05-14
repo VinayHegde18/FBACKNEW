@@ -1,43 +1,38 @@
 package controller;
 
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import dbcon.DbCon;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.AccessibleAttribute;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
+import javafx.scene.text.Text;
 import javafx.util.Callback;
 import model.AllRequirementsModel;
 import model.ManageUsersModel;
 
-public class AdminDashboardController {
+public class AdminDashboardController implements Initializable {
 	@FXML
 	protected AnchorPane adminContainer;
 
@@ -73,6 +68,12 @@ public class AdminDashboardController {
 
 	@FXML
 	public TableColumn<AllRequirementsModel, String> allReq;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, String> userNmColumn;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, String> actionCol;
 
 	@FXML
 	protected AnchorPane rightContainer1;
@@ -121,7 +122,7 @@ public class AdminDashboardController {
 
 	@FXML
 	protected TableColumn<ManageUsersModel, String> emailIdColumn;
-	
+
 	@FXML
 	private TextArea textfld;
 
@@ -168,6 +169,30 @@ public class AdminDashboardController {
 	@FXML
 	private Button updateUser;
 
+	@FXML
+	public TableView<AllRequirementsModel> initTable;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, Integer> reqNum;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, String> reqDetails;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, String> uNameColumn;
+	
+	@FXML
+	protected AnchorPane initContainer;
+	
+    @FXML
+	private Label adminLabel2;
+    
+    @FXML
+    private Label adminLabel1;
+	
+    @FXML
+    protected Button homeBtn;
+
 	ArrayList<String> initlist = new ArrayList<>();
 
 	ArrayList<String> list = new ArrayList<>();
@@ -181,6 +206,31 @@ public class AdminDashboardController {
 	public static ObservableList<AllRequirementsModel> reqList = FXCollections.observableArrayList();
 
 	public static Statement stmt;
+
+	@Override
+	public void initialize(URL arg0, ResourceBundle arg1) {
+		try {
+			DbCon dbCon = new DbCon();
+
+			stmt = dbCon.con.createStatement();
+
+			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null order by reqno desc limit 5");
+
+			while (rs.next()) {
+
+				reqList.add(
+						new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req"), rs.getString("username")));
+			}
+			initTable.setItems(reqList);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		reqNum.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
+		reqDetails.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
+		uNameColumn.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
+
+	}
 
 	@FXML
 	void onSelectChangeView(ActionEvent event) {
@@ -196,6 +246,8 @@ public class AdminDashboardController {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
+			
+			initContainer.setVisible(false);
 
 			getProfileDetails();
 
@@ -211,6 +263,8 @@ public class AdminDashboardController {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
+			
+			initContainer.setVisible(false);
 
 			levellist.clear();
 			statelist.clear();
@@ -231,10 +285,12 @@ public class AdminDashboardController {
 
 			authPanel.setVisible(false);
 			
+			initContainer.setVisible(false);
+
 			usersList.clear();
-			
+
 			manageUsersTable.getItems().clear();
-			
+
 			manageUsers();
 
 		}
@@ -250,9 +306,11 @@ public class AdminDashboardController {
 			allReqTable.setVisible(true);
 
 			authPanel.setVisible(false);
+			
+			initContainer.setVisible(false);
 
 			reqList.clear();
-			
+
 			allReqTable.getItems().clear();
 
 			AllRequirements();
@@ -269,24 +327,41 @@ public class AdminDashboardController {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(true);
+			
+			initContainer.setVisible(false);
 
+			try {
+				DbCon dbCon = new DbCon();
+				Statement stmt = dbCon.con.createStatement();
 
-//			try {
-//				DbCon dbCon = new DbCon();
-//				Statement stmt = dbCon.con.createStatement();
-//
-//				ResultSet rs = stmt.executeQuery("select * from authtbl");
-//
-//				while (rs.next()) {
-//
-//					list.add(rs.getString("authname"));
-//				}
-//				authLevelBox.getItems().addAll(list);
-//
-//			} catch (SQLException e) {
-//
-//				e.printStackTrace();
-//			}
+				ResultSet rs = stmt.executeQuery("select * from authtbl");
+
+				while (rs.next()) {
+
+					list.add(rs.getString("authname"));
+				}
+				authLevelBox.getItems().addAll(list);
+
+			} catch (SQLException e) {
+
+				e.printStackTrace();
+			}
+		}
+		else if (event.getSource() == homeBtn){
+
+			profileContainer.setVisible(false);
+
+			rightContainer1.setVisible(false);
+
+			manageUsersTable.setVisible(false);
+
+			allReqTable.setVisible(false);
+
+			authPanel.setVisible(false);
+			
+			initContainer.setVisible(true);
+			initTable.getItems().clear();
+			initialize(null, null);
 		}
 	}
 
@@ -384,13 +459,12 @@ public class AdminDashboardController {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-//			System.err.println(String.format("Error: %s", e.getMessage()));
 		}
 		slnoColum.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, Integer>("userId"));
 		fullNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("fullName"));
 		userNameColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("userName"));
 		emailIdColumn.setCellValueFactory(new PropertyValueFactory<ManageUsersModel, String>("emailId"));
-		
+
 		Callback<TableColumn<ManageUsersModel, String>, TableCell<ManageUsersModel, String>> cellfactory = (param) -> {
 
 			final TableCell<ManageUsersModel, String> cell = new TableCell<ManageUsersModel, String>() {
@@ -406,7 +480,6 @@ public class AdminDashboardController {
 						final Button deleteButton = new Button("Delete");
 						deleteButton.setOnAction(event -> {
 							ManageUsersModel m = getTableView().getItems().get(getIndex());
-							System.out.println(m.toString());
 							int userId = m.getUserId();
 
 							if (userId != 1) {
@@ -416,8 +489,8 @@ public class AdminDashboardController {
 								Optional<ButtonType> option = alert.showAndWait();
 								if (option.get().equals(ButtonType.OK)) {
 									try {
-										    DbCon dbCon = new DbCon();
-											Statement stmt = dbCon.con.createStatement();
+										DbCon dbCon = new DbCon();
+										Statement stmt = dbCon.con.createStatement();
 										int result = stmt.executeUpdate(
 												"update users set del='d' where userid='" + userId + "'");
 										if (result == 1) {
@@ -448,71 +521,144 @@ public class AdminDashboardController {
 		};
 
 		actionColumn.setCellFactory(cellfactory);
-		
-        
-
-		
 	}
 
 	public void AllRequirements() {
+
 		try {
 			
+			allReqTable.getItems().clear();
+
 			DbCon dbCon = new DbCon();
-			
+
 			stmt = dbCon.con.createStatement();
-			
+
 			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
 
 			while (rs.next()) {
 
-				reqList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
+				reqList.add(
+						new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req"), rs.getString("username")));
 			}
 			allReqTable.setItems(reqList);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.err.println(String.format("Error: %s", e.getMessage()));
 		}
 		reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
 		allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
-		selectCourse();
+		userNmColumn.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
 
-	}
-	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public void selectCourse(){                     
-	    allReqTable.getSelectionModel().setCellSelectionEnabled(true);
-	    ObservableList selectedCells = allReqTable.getSelectionModel().getSelectedCells();
-	      selectedCells.addListener(new ListChangeListener() {
-	    	  
-	      @Override
-	      public void onChanged(Change c) {
-	       if(!selectedCells.isEmpty()) {
-	        TablePosition tablePositionOne = (TablePosition) selectedCells.get(0);
-	        Object val = tablePositionOne.getTableColumn().getCellData(tablePositionOne.getRow());
-	        String text11= val.toString();
-	                 try {
-	        				FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/ViewRequirement.fxml"));
-	        	
-	        				Parent root2 = newloader.load();
-	        				ViewRequirementController viewRequirementController =newloader.getController();
-	        				viewRequirementController.setTexts(text11);
-	        				
-	        				Scene scene = new Scene(root2);
-	        				Stage newstage = new Stage();
-	        				newstage.setResizable(false);
-	        				newstage.setScene(scene);
-	        				newstage.show();
-	        				
-	        			} catch (IOException e) {
-	        				
-	        				e.printStackTrace();
-	        				System.err.println(String.format("Error: %s", e.getMessage()));
-	        			}
-	      }
-	      }
+		Callback<TableColumn<AllRequirementsModel, String>, TableCell<AllRequirementsModel, String>> cellfactoryNew = (
+				param) -> {
+
+			final TableCell<AllRequirementsModel, String> cell = new TableCell<AllRequirementsModel, String>() {
+
+				@Override
+				public void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (empty) {
+						setGraphic(null);
+						setText(null);
+					} else {
+						final Button deleteButton = new Button("Delete");
+						deleteButton.setOnAction(event -> {
+							AllRequirementsModel m = getTableView().getItems().get(getIndex());
+							int reqNo = m.getReqno();
+
+							Alert alert = new Alert(AlertType.CONFIRMATION);
+							alert.setContentText("Are You sure You want to delete this requirement?");
+							Optional<ButtonType> option = alert.showAndWait();
+							if (option.get().equals(ButtonType.OK)) {
+								try {
+									DbCon dbCon = new DbCon();
+									Statement stmt = dbCon.con.createStatement();
+									int result = stmt
+											.executeUpdate("update allreq set mrk='d' where reqno='" + reqNo + "'");
+									if (result == 1) {
+										Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+										newAlert.setContentText("deleted requirement");
+										newAlert.show();
+										refreshReqTable();
+									}
+								} catch (SQLException e) {
+									e.printStackTrace();
+								}
+							}
+						});
+						setGraphic(deleteButton);
+						setText(null);
+
+					}
+				}
+
+			};
+
+			return cell;
+		};
+
+		actionCol.setCellFactory(cellfactoryNew);
+
+	    allReq.setCellFactory(param -> {
+	        return new TableCell<AllRequirementsModel, String>() {
+	            @Override
+	            protected void updateItem(String item, boolean empty) {
+	                super.updateItem(item, empty);
+
+	                if (item == null || empty) {
+	                    setText(null);
+	                    setStyle("");
+	                } else {
+	                    Text text = new Text(item);
+	                    text.setStyle("-fx-text-alignment:justify;");                      
+	                    text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
+	                    setGraphic(text);
+	                }
+	            }
+	        };
 	    });
-	  }
+	}
+
+	public void refreshReqTable() {
+		allReqTable.getItems().clear();
+		AllRequirements();
+	}
+//
+//	@SuppressWarnings({ "rawtypes", "unchecked" })
+//	public void selectCourse() {
+//		allReqTable.getSelectionModel().setCellSelectionEnabled(true);
+//		ObservableList selectedCells = allReqTable.getSelectionModel().getSelectedCells();
+//		selectedCells.addListener(new ListChangeListener() {
+//
+//			@Override
+//			public void onChanged(Change c) {
+//				if (!selectedCells.isEmpty()) {
+//					TablePosition tablePositionOne = (TablePosition) selectedCells.get(0);
+//					Object val = tablePositionOne.getTableColumn().getCellData(tablePositionOne.getRow());
+//					String text11 = val.toString();
+//					try {
+//						FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/ViewRequirement.fxml"));
+//
+//						Parent root2 = newloader.load();
+//						ViewRequirementController viewRequirementController = newloader.getController();
+//						viewRequirementController.setTexts(text11);
+//
+//						Scene scene = new Scene(root2);
+//						Stage newstage = new Stage();
+//						newstage.setResizable(false);
+//						newstage.setScene(scene);
+//						newstage.show();
+//
+//					} catch (IOException e) {
+//
+//						e.printStackTrace();
+//						System.err.println(String.format("Error: %s", e.getMessage()));
+//					}
+//				}
+//			}
+//		});
+//	}
 
 	@FXML
 	public void createUser(ActionEvent event) {
@@ -564,7 +710,7 @@ public class AdminDashboardController {
 	void onClickUpdateUser(ActionEvent event) {
 
 		DbCon dbCon = new DbCon();
-		
+
 		try {
 			stmt = dbCon.con.createStatement();
 
@@ -585,6 +731,7 @@ public class AdminDashboardController {
 		manageUsersTable.getItems().clear();
 		manageUsers();
 	}
+
 	public void clearUsersFields() {
 		userName.setText("");
 

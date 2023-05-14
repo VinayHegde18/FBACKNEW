@@ -1,0 +1,28 @@
+#postContainer, #profileContainer {
+	-fx-background-color: #0FD6E6;
+}
+
+#allReqTable, #yourReqTable,#initTable {
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 30, 0, 0, 0);
+}
+
+#profileBtn, #postButton, #allReqButton, #yourReqButton,#homeBtn {
+	-fx-background-color: #3E4D4E;
+	-fx-text-fill: #C9F1F5;
+	-fx-font-size: 13px;
+	-fx-font-weight: bold;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+
+#userContainer {
+	-fx-background-color: #0CE1F7;
+}
+
+#headerText {
+	-fx-font-family: "Times New Roman", Times, serif;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 5, 0, 0, 0);
+}
+
+#userPage {
+	-fx-background-color: #C3CFE5;
+}

@@ -31,6 +31,9 @@ public class AllRequirementsController{
 	@FXML
 	private TableColumn<AllRequirementsModel, String> allReq;
 	
+	@FXML
+    private TableColumn<AllRequirementsModel, String> userNmColumn;
+	
 	public ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 
 public void getUserProfileDetails() {
@@ -42,7 +45,7 @@ public void getUserProfileDetails() {
 
 			while (rs.next()) {
 
-				dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
+				dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req"),rs.getString("username")));
 			}
 			allReqTable.setItems(dataList);
 
@@ -52,6 +55,7 @@ public void getUserProfileDetails() {
 		}
 		reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
 		allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
+		userNmColumn.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
 	}
 
 }

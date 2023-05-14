@@ -1,3 +1,30 @@
 #adminLeftContainer{
-	-fx-background-color:orange;
+	-fx-background-color:#0CE1F7;
+	-fx-border-width:2px;
+	-fx-border-style:solid;
+	-fx-border-color:#17E523;
+}
+#adminContainer{
+	-fx-background-color:#C3CFE5;
+}
+#profile,#addUser,#manageUser,#requirements,#authLevel,#homeBtn{
+	-fx-background-color:#3E4D4E;
+	-fx-text-fill:#C9F1F5;
+	-fx-font-size:13px;
+	-fx-font-weight:bold;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 0);
+}
+#initTable,#manageUsersTable,#allReqTable{
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+}
+#adminLabel1{
+	-fx-font-family: "Times New Roman", Times, serif;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 5, 0, 0, 0);
+}
+#adminLabel2{
+	-fx-text-fill:#F0F704;
+}
+#profileContainer,#rightContainer1{
+	-fx-background-color:#0FD6E6;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
 }
