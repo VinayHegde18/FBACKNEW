@@ -8,6 +8,7 @@ module feedbackapp {
 	requires itextpdf;
 	requires jakarta.persistence;
 
-	opens controller to javafx.graphics, javafx.fxml;
-	opens model to javafx.base,javafx.graphics, javafx.fxml;
+	opens controller to javafx.fxml,javafx.graphics,javafx.base,javafx.controls,javafx.media,javafx.swt,javafx.web;
+	opens model to javafx.base,javafx.graphics, javafx.fxml ,javafx.swing,javafx.media,javafx.swt,javafx.web;
+
 }

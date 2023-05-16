@@ -10,10 +10,9 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="main" maxHeight="-Infinity" maxWidth="1200.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1012.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controller">
+<AnchorPane fx:id="main" maxHeight="-Infinity" maxWidth="1200.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1012.0" stylesheets="@../css/style.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.controller">
    <children>
       <AnchorPane fx:id="rightContainer" layoutX="572.0" layoutY="99.0" prefHeight="459.0" prefWidth="337.0" stylesheets="@../css/style.css">
          <children>
@@ -34,14 +33,14 @@
             </Label>
          </children>
       </AnchorPane>
-      <TextField fx:id="text1" blendMode="MULTIPLY" layoutX="644.0" layoutY="222.0" mouseTransparent="true" prefHeight="38.0" prefWidth="228.0" promptText="USERNAME">
+      <TextField fx:id="text1" cache="true" layoutX="644.0" layoutY="222.0" mouseTransparent="true" prefHeight="38.0" prefWidth="228.0" promptText="USERNAME">
          <font>
             <Font size="16.0" />
          </font>
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor></TextField>
-      <PasswordField fx:id="text2" blendMode="MULTIPLY" layoutX="644.0" layoutY="302.0" prefHeight="38.0" prefWidth="228.0" promptText="PASSWORD">
+      <PasswordField fx:id="text2" cache="true" layoutX="644.0" layoutY="302.0" prefHeight="38.0" prefWidth="228.0" promptText="PASSWORD">
          <font>
             <Font size="16.0" />
          </font>
@@ -74,4 +73,4 @@
       </Button>
       <Hyperlink fx:id="signuplink" alignment="CENTER" layoutX="644.0" layoutY="463.0" onAction="#onClickSignupcntrl" prefHeight="23.0" prefWidth="228.0" text="New User? Signup Here" />
    </children>
-</Pane>
+</AnchorPane>
