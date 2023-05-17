@@ -28,6 +28,7 @@
             <Font size="32.0" />
          </font>
       </Label>
+      <Button fx:id="profileBtn" layoutX="41.0" layoutY="169.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="PROFILE" />
       <Button fx:id="postButton" layoutX="41.0" layoutY="232.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="POST REQUIREMENTS" />
       <Button fx:id="yourReqButton" layoutX="41.0" layoutY="361.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="YOUR REQUIREMENTS" />
       <Button fx:id="logoutButton" layoutX="1006.0" layoutY="17.0" mnemonicParsing="false" onAction="#onClickLogout" prefHeight="40.0" prefWidth="121.0" text="LOGOUT" textFill="#b54444" />
@@ -43,9 +44,13 @@
             <Label alignment="CENTER" layoutX="48.0" layoutY="217.0" prefHeight="28.0" prefWidth="113.0" text="EMAIL ID" />
             <Label alignment="CENTER" layoutX="439.0" layoutY="143.0" prefHeight="28.0" prefWidth="113.0" text="PASSWORD" />
             <Label alignment="CENTER" layoutX="439.0" layoutY="217.0" prefHeight="28.0" prefWidth="113.0" text="STATE" />
+            <Button fx:id="updateProfileButton" layoutX="541.0" layoutY="346.0" mnemonicParsing="false" onAction="#updateProfile" prefHeight="40.0" prefWidth="121.0" text="UPDATE">
+               <font>
+                  <Font size="19.0" />
+               </font>
+            </Button>
          </children>
       </AnchorPane>
-      <Button fx:id="profileBtn" layoutX="41.0" layoutY="169.0" mnemonicParsing="false" onAction="#onClickDisplay" prefHeight="40.0" prefWidth="203.0" text="PROFILE" />
       <AnchorPane fx:id="postContainer" layoutX="286.0" layoutY="91.0" prefHeight="490.0" prefWidth="828.0" visible="false">
          <children>
             <Button fx:id="postReq" layoutX="661.0" layoutY="55.0" mnemonicParsing="false" onAction="#postRequirements" prefHeight="54.0" prefWidth="132.0" text="Submit" textAlignment="CENTER" textFill="#b2ad48">

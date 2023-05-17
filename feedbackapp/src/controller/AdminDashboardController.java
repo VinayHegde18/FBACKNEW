@@ -708,20 +708,39 @@ public class AdminDashboardController implements Initializable {
 
 	@FXML
 	void onClickUpdateUser(ActionEvent event) {
+		
+		String fullNameString = fullNameProfile.getText();
 
+		String userPasswordString = userPasswordProfile.getText();
+
+		String userNameString = userNameProfile.getText();
+
+		String emaiIdString = emailIdProfile.getText();
+
+		String userStateString = userStateProfile.getText();
+
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setContentText("Are You sure You want to update?");
+		Optional<ButtonType> option = alert.showAndWait();
+		if(option.get().equals(ButtonType.OK)) {
+		
 		DbCon dbCon = new DbCon();
 
 		try {
 			stmt = dbCon.con.createStatement();
 
-			ResultSet rs2 = stmt.executeQuery("select * from userlevel");
+				int result = stmt.executeUpdate("UPDATE USERS SET name='"
+						+ fullNameString + "',email='" + emaiIdString + "',password='" + userPasswordString + "',cpassword='" + userPasswordString + "',userstate='" + userStateString + "' WHERE USERNAME='" + userNameString + "'");
 
-			while (rs2.next()) {
+				if (result>= 1) {
+					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+					newAlert.setContentText("Profile Updated Successfully");
+					newAlert.show();
+				}
 
-				levellist.add(rs2.getString("levelid"));
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}
 		}
 
 	}

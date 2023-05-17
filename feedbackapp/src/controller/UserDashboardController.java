@@ -45,6 +45,9 @@ public class UserDashboardController implements Initializable {
     private Pane userPage;
     
     @FXML
+    private Button updateProfileButton;
+    
+    @FXML
     private Button homeBtn;
 
 	@FXML
@@ -278,6 +281,46 @@ public class UserDashboardController implements Initializable {
 		}
     	
     }
+	
+    @FXML
+    void updateProfile(ActionEvent event) {
+		String fullNameString = fullNameProfile.getText();
+
+		String userPasswordString = userPasswordProfile.getText();
+
+		String userNameString = userNameProfile.getText();
+
+		String emaiIdString = emailIdProfile.getText();
+
+		String userStateString = userStateProfile.getText();
+		
+		Alert alert = new Alert(AlertType.CONFIRMATION);
+		alert.setContentText("Are You sure You want to update?");
+		Optional<ButtonType> option = alert.showAndWait();
+		if(option.get().equals(ButtonType.OK)) {
+		
+		DbCon dbCon = new DbCon();
+
+		try {
+			stmt = dbCon.con.createStatement();
+			
+			int initRes = stmt.executeUpdate("update users set del='D' where username='" + userNameString + "'");
+
+				int result = stmt.executeUpdate("insert into users(name,email,username,password,cpassword,userstate) values ('"
+						+ fullNameString + "','" + emaiIdString + "','" + userNameString + "','" + userPasswordString + "','" + userPasswordString + "','" + userStateString + "')");
+
+				if (result == 1) {
+					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+					newAlert.setContentText("Profile Updated Successfully");
+					newAlert.show();
+				}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		}
+		
+    }
 
 	public void getUserProfileDetails() {
 		DbCon dbCon = new DbCon();
@@ -299,6 +342,7 @@ public class UserDashboardController implements Initializable {
 				emailIdProfile.setText(profileRs2.getString("email"));
 
 				userStateProfile.setText(profileRs2.getString("userstate"));
+				
 			}
 
 		} catch (SQLException e) {
