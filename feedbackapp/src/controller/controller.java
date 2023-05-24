@@ -19,6 +19,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Hyperlink;
@@ -146,6 +148,29 @@ public class controller {
 		      }
 		}
 	}
+	
+    @FXML
+    void onkeypressEvent(KeyEvent event) {
+    	try {
+		Node node = (Node) event.getSource();
+		Scene scene = node.getScene();
+		scene.setOnKeyPressed(ev -> {
+	            if (ev.getCode() == KeyCode.ESCAPE) {
+	            Alert alert = new Alert(AlertType.CONFIRMATION);
+	  		      alert.setContentText("Do You want to Quit?");
+	  		      Optional<ButtonType> option = alert.showAndWait();
+
+	  		      if(option.get().equals(ButtonType.OK)) {
+	  		    	  System.exit(0);
+	  		      }
+	            }
+	            ev.consume();
+	        });
+    	}catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+	
 	@FXML
     void onClickSignupcntrl(ActionEvent event) throws SQLException {
 //           SignUpController SignUpController = new SignUpController();

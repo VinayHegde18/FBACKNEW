@@ -28,3 +28,38 @@
 	-fx-background-color:#0FD6E6;
 	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
 }
+#clearButton{
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+	-fx-background-color:linear-gradient(from 0% 0% to 100% 100%, #031854 0%, #0C44E7 100%);
+	-fx-cursor:hand;
+}
+#createButton{
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+	-fx-background-color:linear-gradient(from 0% 0% to 100% 100%, #031854 0%, #0C44E7 100%);
+}
+#logout{
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+	-fx-background-color:linear-gradient(from 0% 0% to 100% 100%, #E70C72 0%, #700437 100%);
+	-fx-cursor:hand;
+}
+#updateUser{
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+	-fx-background-color:linear-gradient(from 0% 0% to 100% 100%, #8423F9 0%, #7652A1 100%);
+	-fx-cursor:hand;
+}
+#userLevel{
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+	-fx-background-color:linear-gradient(from 0% 0% to 100% 100%, #8423F9 0%, #7652A1 100%);
+	-fx-cursor:hand;
+}
+#userState{
+	-fx-text-fill:white;
+	-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 30, 0, 0, 0);
+	-fx-background-color:linear-gradient(from 0% 0% to 100% 100%, #8423F9 0%, #7652A1 100%);
+	-fx-cursor:hand;
+}

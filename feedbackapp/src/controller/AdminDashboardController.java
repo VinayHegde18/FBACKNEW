@@ -14,6 +14,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -26,6 +28,8 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
@@ -53,9 +57,6 @@ public class AdminDashboardController implements Initializable {
 
 	@FXML
 	protected Button requirements;
-
-	@FXML
-	protected Button someText;
 
 	@FXML
 	protected AnchorPane rightContainer;
@@ -192,12 +193,23 @@ public class AdminDashboardController implements Initializable {
 	
     @FXML
     protected Button homeBtn;
+    
+    @FXML
+    private ChoiceBox<String> userStateBox;
+    
+    @FXML
+    private ChoiceBox<String> userNameBox;
+
+    @FXML
+    private Button updateUserAuthLevel;
 
 	ArrayList<String> initlist = new ArrayList<>();
 
 	ArrayList<String> list = new ArrayList<>();
+	
+	ArrayList<String> userList = new ArrayList<>();
 
-	ArrayList<String> statelist = new ArrayList<>();
+    ArrayList<String> statelist = new ArrayList<>();
 
 	ArrayList<String> levellist = new ArrayList<>();
 
@@ -229,7 +241,6 @@ public class AdminDashboardController implements Initializable {
 		reqNum.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
 		reqDetails.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
 		uNameColumn.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
-
 	}
 
 	@FXML
@@ -329,23 +340,11 @@ public class AdminDashboardController implements Initializable {
 			authPanel.setVisible(true);
 			
 			initContainer.setVisible(false);
+			
+			getUserNameBox();
 
-			try {
-				DbCon dbCon = new DbCon();
-				Statement stmt = dbCon.con.createStatement();
-
-				ResultSet rs = stmt.executeQuery("select * from authtbl");
-
-				while (rs.next()) {
-
-					list.add(rs.getString("authname"));
-				}
-				authLevelBox.getItems().addAll(list);
-
-			} catch (SQLException e) {
-
-				e.printStackTrace();
-			}
+			getAuthLevel();
+			
 		}
 		else if (event.getSource() == homeBtn){
 
@@ -362,9 +361,42 @@ public class AdminDashboardController implements Initializable {
 			initContainer.setVisible(true);
 			initTable.getItems().clear();
 			initialize(null, null);
+			
 		}
 	}
-
+	
+    @FXML
+    void keypressEvent(KeyEvent event) {
+    	try {
+		Node node = (Node) event.getSource();
+		Scene scene = node.getScene();
+		scene.setOnKeyPressed(ev -> {
+	            if (ev.getCode() == KeyCode.ESCAPE) {
+	    			 	 LogoutController logout = new LogoutController();
+	    			 	 logout.EscKeyPressed(event);
+	            }
+	            ev.consume();
+	        });
+    	}catch (Exception e) {
+			e.printStackTrace();
+		}
+//		 scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent ev) -> {
+//		Node node = (Node) event.getSource();
+//		Scene scene = node.getScene();
+//		scene.setOnKeyPressed(e -> {
+//		    if (e.getCode() == KeyCode.A) {
+//		        System.out.println("The 'A' key was pressed");
+//		    }
+//		});
+		
+//	Node node = (Node) event.getSource();
+//	Scene scene = node.getScene();
+//	
+//	scene.addEventFilter(KeyEvent.ANY, keyEvent -> {
+//        System.out.println(keyEvent);
+//    });
+    }
+	
 	public void getState() {
 
 		userState.getItems().removeAll(userState.getItems());
@@ -408,7 +440,51 @@ public class AdminDashboardController implements Initializable {
 			e.printStackTrace();
 		}
 	}
+	
+	public void getAuthLevel() {
 
+		authLevelBox.getItems().removeAll(authLevelBox.getItems());
+
+		try {
+			DbCon dbCon = new DbCon();
+			Statement stmt = dbCon.con.createStatement();
+
+			ResultSet rs = stmt.executeQuery("select * from authtbl");
+
+			while (rs.next()) {
+
+				list.add(rs.getString("authname"));
+			}
+			authLevelBox.getItems().addAll(list);
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+	}
+
+	public void getUserNameBox() {
+
+		userNameBox.getItems().removeAll(userNameBox.getItems());
+
+		try {
+			DbCon dbCon = new DbCon();
+			Statement stmt = dbCon.con.createStatement();
+
+			ResultSet rs = stmt.executeQuery("select * from users where del is null");
+
+			while (rs.next()) {
+
+				userList.add(rs.getString("username"));
+			}
+			userNameBox.getItems().addAll(userList);
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
 	public void getProfileDetails() {
 
 		DbCon dbCon = new DbCon();
@@ -418,6 +494,7 @@ public class AdminDashboardController implements Initializable {
 		Statement stmt;
 
 		try {
+			
 			stmt = dbCon.con.createStatement();
 
 			ResultSet profileRs = stmt
@@ -432,9 +509,15 @@ public class AdminDashboardController implements Initializable {
 				userNameProfile.setText(profileRs.getString("username"));
 
 				emailIdProfile.setText(profileRs.getString("email"));
-
-				userStateProfile.setText(profileRs.getString("userstate"));
+				
+				
+//				userStateBox.getItems().addAll(statelist);
+//				userStateBox.setId(profileRs.getString("userstate"));
+				
+				userStateBox.getItems().setAll(profileRs.getString("userstate"));
+				
 			}
+			userStateBox.getItems().addAll(statelist);
 
 		} catch (SQLException e) {
 
@@ -679,10 +762,20 @@ public class AdminDashboardController implements Initializable {
 
 		String uState = userState.getItems().get(0);
 
+//		userName.setOnKeyPressed(new EventHandler<KeyEvent>()
+//		 {
+//		   @Override
+//		   public void handle(KeyEvent ke)
+//		   {
+//		     if (ke.getCode().equals(KeyCode.ENTER))
+//		     {
+//		       System.out.println("hello");
+//		     }
+//		   }
+//		 });
 		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name, uLevel, uState);
 		clearUsersFields();
 	}
-
 	@FXML
 	void onClickClear(ActionEvent event) {
 
@@ -770,12 +863,33 @@ public class AdminDashboardController implements Initializable {
 		getState();
 		getUserLevel();
 	}
+	
+	@FXML
+    void updateUserAuthLevelFunction(ActionEvent event) {
+		
+//		String authUserName=userNameBox.getItems().get(0);
+//		String authLevelName = authLevelBox.getItems().get(0);
+//		ifbLOC
+//		
+//		
+//		try {
+//			DbCon dbCon = new DbCon();
+//			Statement stmt = dbCon.con.createStatement();
+//			stmt = dbCon.con.createStatement();
+//
+//			int result = stmt.executeUpdate("insert into userauthlevel(authusername,authlevelname,blocked,status) values ('"
+//					+ authUserName + "','" + authLevelName + "','" + ifBlocked + "','" + status + "')");
+//			
+//		} catch (SQLException e) {
+//
+//			e.printStackTrace();
+//		}
+    }
 
 	@FXML
 	void logout(ActionEvent event) {
-
-		@SuppressWarnings("unused")
-		LogoutController LogoutController = new LogoutController(event);
+		LogoutController LogoutController = new LogoutController();
+		LogoutController.LogoutController(event);
 	}
 
 //	    

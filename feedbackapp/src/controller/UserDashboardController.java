@@ -489,7 +489,8 @@ public class UserDashboardController implements Initializable {
     
 	@FXML
 	public void onClickLogout(ActionEvent event) {
-		LogoutController LogoutController = new LogoutController(event);
+		LogoutController LogoutController = new LogoutController();
+		LogoutController.LogoutController(event);
 	}
 
 
