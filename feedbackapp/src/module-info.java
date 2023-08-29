@@ -5,8 +5,7 @@ module feedbackapp {
 	requires javafx.fxml;
 	requires javafx.graphics;
 	requires javafx.base;
-	requires itextpdf;
-	requires jakarta.persistence;
+	requires jasperreports;
 
 	opens controller to javafx.fxml,javafx.graphics,javafx.base,javafx.controls,javafx.media,javafx.swt,javafx.web;
 	opens model to javafx.base,javafx.graphics, javafx.fxml ,javafx.swing,javafx.media,javafx.swt,javafx.web;

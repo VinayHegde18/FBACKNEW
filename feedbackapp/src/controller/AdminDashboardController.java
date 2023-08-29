@@ -1,10 +1,15 @@
 package controller;
 
+import java.io.File;
+import java.io.InputStream;
 import java.net.URL;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -35,6 +40,19 @@ import javafx.scene.text.Text;
 import javafx.util.Callback;
 import model.AllRequirementsModel;
 import model.ManageUsersModel;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.util.ReportCreator;
+import net.sf.jasperreports.export.SimpleDocxReportConfiguration;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.view.JasperViewer;
 
 public class AdminDashboardController implements Initializable {
 	@FXML
@@ -218,6 +236,9 @@ public class AdminDashboardController implements Initializable {
 	public static ObservableList<AllRequirementsModel> reqList = FXCollections.observableArrayList();
 
 	public static Statement stmt;
+	
+	@FXML
+    private Button genarateReportBtn;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -864,6 +885,37 @@ public class AdminDashboardController implements Initializable {
 		getUserLevel();
 	}
 	
+	 @FXML
+	    void genarateReport(ActionEvent event) {
+		 DbCon dbCon = new DbCon();
+		 Connection con = dbCon.con;
+		 Map<String, Object> map = new HashMap<>();
+        map.put("headding", "allusers");//parameter name should be like it was named inside your report.
+         genarateReport(
+        		 REPORT, map, con );
+	    }
+	
+//	 public static String OUT_PUT = "your_output_file_path/myreport.docx";
+	 public static String REPORT = "/feedbackapp/src/reports/allusers.jrxml";
+
+	 public void genarateReport(String reportPath,
+	         Map<String, Object> map, Connection con) {
+	     try {
+
+	         JasperReport jr = JasperCompileManager.compileReport(
+	                 ClassLoader.getSystemResourceAsStream(reportPath));
+	         JasperPrint jp = JasperFillManager.fillReport(jr, map, con);
+	         JRDocxExporter export = new JRDocxExporter();
+	     export.setExporterInput(new SimpleExporterInput(jp));
+//	     export.setExporterOutput(new SimpleOutputStreamExporterOutput(new File(OUT_PUT)));
+	     SimpleDocxReportConfiguration config = new SimpleDocxReportConfiguration();
+	     export.setConfiguration(config);
+	     export.exportReport();
+	     } catch (JRException ex) {
+	         ex.printStackTrace();   
+	     }
+	 }
+	 
 	@FXML
     void updateUserAuthLevelFunction(ActionEvent event) {
 		

@@ -9,9 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 
-import com.itextpdf.text.pdf.PdfStructTreeController.returnType;
-
-import jakarta.persistence.metamodel.StaticMetamodel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

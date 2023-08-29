@@ -11,7 +11,6 @@ import java.sql.Statement;
 import java.util.Optional;
 
 import dbcon.DbCon;
-import jakarta.persistence.metamodel.StaticMetamodel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
