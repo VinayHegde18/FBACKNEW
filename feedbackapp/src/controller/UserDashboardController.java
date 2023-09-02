@@ -16,9 +16,12 @@ import javafx.animation.TranslateTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -31,24 +34,27 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import javafx.util.Duration;
 import model.AllRequirementsModel;
 import model.YourRequirementsModel;
 
 public class UserDashboardController implements Initializable {
-	
-    @FXML
-    private Pane userPage;
-    
-    @FXML
-    private Button updateProfileButton;
-    
-    @FXML
-    private Button homeBtn;
+
+	@FXML
+	private Pane userPage;
+
+	@FXML
+	private Button updateProfileButton;
+
+	@FXML
+	private Button homeBtn;
 
 	@FXML
 	private AnchorPane userContainer;
@@ -93,7 +99,7 @@ public class UserDashboardController implements Initializable {
 	public Button profileBtn;
 
 	@FXML
-	private AnchorPane postContainer;
+	static AnchorPane postContainer;
 
 	@FXML
 	private Button postReq;
@@ -103,15 +109,15 @@ public class UserDashboardController implements Initializable {
 
 	@FXML
 	private AnchorPane reqContainer;
-	
+
 	@FXML
-    private TableView<YourRequirementsModel> yourReqTable;
+	private TableView<YourRequirementsModel> yourReqTable;
 
-    @FXML
-    private TableColumn<YourRequirementsModel, Integer> yreqno;
+	@FXML
+	private TableColumn<YourRequirementsModel, Integer> yreqno;
 
-    @FXML
-    private TableColumn<YourRequirementsModel, String> yreq;
+	@FXML
+	private TableColumn<YourRequirementsModel, String> yreq;
 
 	@FXML
 	private AnchorPane yourReqContainer;
@@ -124,50 +130,84 @@ public class UserDashboardController implements Initializable {
 
 	@FXML
 	private TableColumn<AllRequirementsModel, String> allReq;
-	
+
 	@FXML
-    private TableColumn<AllRequirementsModel, String> userNmColumn;
-	
+	private TableColumn<AllRequirementsModel, String> userNmColumn;
+
 	@FXML
 	private TableColumn actionCol;
-	
-    @FXML
-    private AnchorPane initContainer;
 
-    @FXML
-    public TableView<AllRequirementsModel> initTable;
+	@FXML
+	private AnchorPane initContainer;
 
-    @FXML
-    public TableColumn<AllRequirementsModel, Integer> reqNum;
+	@FXML
+	public TableView<AllRequirementsModel> initTable;
 
-    @FXML
-    public TableColumn<AllRequirementsModel, String> reqDetails;
+	@FXML
+	public TableColumn<AllRequirementsModel, Integer> reqNum;
 
-    @FXML
-    public TableColumn<AllRequirementsModel, String> uNameCol;
-	
+	@FXML
+	public TableColumn<AllRequirementsModel, String> reqDetails;
+
+	@FXML
+	public TableColumn<AllRequirementsModel, String> uNameCol;
+
 	public String loggedinUname = controller.curUname;
 
-
-	
 	public ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
-	
+
 	public ObservableList<YourRequirementsModel> dataList2 = FXCollections.observableArrayList();
-	
+
 	public static ObservableList<AllRequirementsModel> reqList = FXCollections.observableArrayList();
 
 //	DbCon dbCon = new DbCon();
-	
+
 	public static Statement stmt;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
+		DbCon dbCon = new DbCon();
 		try {
-
-			DbCon dbCon = new DbCon();
-
 			stmt = dbCon.con.createStatement();
+		} catch (SQLException e1) {
+			e1.printStackTrace();
+		}
+		VBox newroot = new VBox();
+		newroot.setId("menuVbox");
+		int btnId=1;
+		String uname=controller.uname;
+		try {
+			Statement resstmt = dbCon.con.createStatement();
+			ResultSet menulist = resstmt.executeQuery(
+					"select * from userauthlevel where menuitem in (select menuname from menumaster) and authusername='" + uname + "'");
+			while (menulist.next()) {
+				String buttonString = menulist.getString("menuItem");
+				Button button = new Button(buttonString);
+				String conv = String.valueOf(btnId);
+				String btnid = "menuBtn"+conv;
+				button.setId(btnid);
+				button.setMinWidth(200);
+				button.setMaxWidth(200);
+				button.setMaxHeight(40);
+				button.setMinHeight(40);
+				button.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+//						onActionClass onActionClass = new onActionClass();
+//						onActionClass.onAction(event, btnid);
+					}
+					
+				});
+				newroot.getChildren().addAll(button);
+				btnId++;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+//		root.getChildren().add(newroot);
+		try {
 
 			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
 
@@ -184,32 +224,31 @@ public class UserDashboardController implements Initializable {
 		reqNum.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
 		reqDetails.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
 		uNameCol.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
-	    reqDetails.setCellFactory(param -> {
-	        return new TableCell<AllRequirementsModel, String>() {
-	            @Override
-	            protected void updateItem(String item, boolean empty) {
-	                super.updateItem(item, empty);
+		reqDetails.setCellFactory(param -> {
+			return new TableCell<AllRequirementsModel, String>() {
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
 
-	                if (item == null || empty) {
-	                    setText(null);
-	                    setStyle("");
-	                } else {
-	                    Text text = new Text(item);
-	                    text.setStyle("-fx-text-alignment:justify;");                      
-	                    text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
-	                    setGraphic(text);
-	                }
-	            }
-	        };
-	    });
+					if (item == null || empty) {
+						setText(null);
+						setStyle("");
+					} else {
+						Text text = new Text(item);
+						text.setStyle("-fx-text-alignment:justify;");
+						text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
+						setGraphic(text);
+					}
+				}
+			};
+		});
 	}
-	
+
 	public void setLabelText(String text) {
 		wlcometxt.setText("Welcome " + text);
 	}
 
-	@FXML
-	void onClickDisplay(ActionEvent event) {
+	public void onClickDisplay(ActionEvent event) {
 
 		if (event.getSource() == profileBtn) {
 
@@ -222,68 +261,67 @@ public class UserDashboardController implements Initializable {
 //			UserProfileController.GetUserDetails();
 		}
 
-		else if (event.getSource() == allReqButton) {
-
-			profileContainer.setVisible(false);
-			reqContainer.setVisible(true);
-			yourReqContainer.setVisible(false);
-			postContainer.setVisible(false);
-			initContainer.setVisible(false);
-			allReqTable.getItems().clear();
-			AllRequirements();
-
-		} else if (event.getSource() == postButton) {
-
-			profileContainer.setVisible(false);
-			reqContainer.setVisible(false);
-			yourReqContainer.setVisible(false);
-			postContainer.setVisible(true);
-			initContainer.setVisible(false);
-			postText.setText("");
-
-		} else if (event.getSource() == yourReqButton) {
-
-			profileContainer.setVisible(false);
-			reqContainer.setVisible(false);
-			yourReqContainer.setVisible(true);
-			postContainer.setVisible(false);
-			initContainer.setVisible(false);
-			yourReqTable.getItems().clear();
-			yourRequirements();
+//		else if (event.getSource() == allReqButton) {
+//
+//			profileContainer.setVisible(false);
+//			reqContainer.setVisible(true);
+//			yourReqContainer.setVisible(false);
+//			postContainer.setVisible(false);
+//			initContainer.setVisible(false);
+//			allReqTable.getItems().clear();
+//			AllRequirements();
+//
+//		} else if (event.getSource() == postButton) {
+//
+//			profileContainer.setVisible(false);
+//			reqContainer.setVisible(false);
+//			yourReqContainer.setVisible(false);
+//			postContainer.setVisible(true);
+//			initContainer.setVisible(false);
+//			postText.setText("");
+//
+//		} else if (event.getSource() == yourReqButton) {
+//
+//			profileContainer.setVisible(false);
+//			reqContainer.setVisible(false);
+//			yourReqContainer.setVisible(true);
+//			postContainer.setVisible(false);
+//			initContainer.setVisible(false);
+//			yourReqTable.getItems().clear();
+//			yourRequirements();
+//
+//		} else if (event.getSource() == homeBtn) {
+//
+//			profileContainer.setVisible(false);
+//			reqContainer.setVisible(false);
+//			yourReqContainer.setVisible(false);
+//			postContainer.setVisible(false);
+//			initContainer.setVisible(true);
+//			yourReqTable.getItems().clear();
+//			yourRequirements();
 
 		}
-    else if (event.getSource() == homeBtn) {
-
-		profileContainer.setVisible(false);
-		reqContainer.setVisible(false);
-		yourReqContainer.setVisible(false);
-		postContainer.setVisible(false);
-		initContainer.setVisible(true);
-		yourReqTable.getItems().clear();
-		yourRequirements();
-
 	}
-	}
-	
+
 	@FXML
-    void postRequirements(ActionEvent event) {
-        
-    	String reqText = postText.getText();
+	void postRequirements(ActionEvent event) {
 
-    	try {
-    		
+		String reqText = postText.getText();
+
+		try {
+
 			PostRequirementsController.postRequirements(reqText);
 			postText.setText("");
-			
+
 		} catch (SQLException e) {
 
 			e.printStackTrace();
 		}
-    	
-    }
-	
-    @FXML
-    void updateProfile(ActionEvent event) {
+
+	}
+
+	@FXML
+	void updateProfile(ActionEvent event) {
 		String fullNameString = fullNameProfile.getText();
 
 		String userPasswordString = userPasswordProfile.getText();
@@ -293,21 +331,23 @@ public class UserDashboardController implements Initializable {
 		String emaiIdString = emailIdProfile.getText();
 
 		String userStateString = userStateProfile.getText();
-		
+
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setContentText("Are You sure You want to update?");
 		Optional<ButtonType> option = alert.showAndWait();
-		if(option.get().equals(ButtonType.OK)) {
-		
-		DbCon dbCon = new DbCon();
+		if (option.get().equals(ButtonType.OK)) {
 
-		try {
-			stmt = dbCon.con.createStatement();
-			
-			int initRes = stmt.executeUpdate("update users set del='D' where username='" + userNameString + "'");
+			DbCon dbCon = new DbCon();
 
-				int result = stmt.executeUpdate("insert into users(name,email,username,password,cpassword,userstate) values ('"
-						+ fullNameString + "','" + emaiIdString + "','" + userNameString + "','" + userPasswordString + "','" + userPasswordString + "','" + userStateString + "')");
+			try {
+				stmt = dbCon.con.createStatement();
+
+				int initRes = stmt.executeUpdate("update users set del='D' where username='" + userNameString + "'");
+
+				int result = stmt
+						.executeUpdate("insert into users(name,email,username,password,cpassword,userstate) values ('"
+								+ fullNameString + "','" + emaiIdString + "','" + userNameString + "','"
+								+ userPasswordString + "','" + userPasswordString + "','" + userStateString + "')");
 
 				if (result == 1) {
 					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -315,12 +355,12 @@ public class UserDashboardController implements Initializable {
 					newAlert.show();
 				}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-		}
-		
-    }
+
+	}
 
 	public void getUserProfileDetails() {
 		DbCon dbCon = new DbCon();
@@ -342,7 +382,7 @@ public class UserDashboardController implements Initializable {
 				emailIdProfile.setText(profileRs2.getString("email"));
 
 				userStateProfile.setText(profileRs2.getString("userstate"));
-				
+
 			}
 
 		} catch (SQLException e) {
@@ -350,52 +390,54 @@ public class UserDashboardController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void AllRequirements() {
-			try {
-				DbCon dbCon = new DbCon();
-				stmt = dbCon.con.createStatement();
-				ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
+		try {
+			DbCon dbCon = new DbCon();
+			stmt = dbCon.con.createStatement();
+			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
 
-				while (rs.next()) {
+			while (rs.next()) {
 
-					dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req"),rs.getString("username")));
-				}
-				allReqTable.setItems(dataList);
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-				System.err.println(String.format("Error: %s", e.getMessage()));
+				dataList.add(
+						new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req"), rs.getString("username")));
 			}
-			reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
-			allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
-			userNmColumn.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
-		    allReq.setCellFactory(param -> {
-		        return new TableCell<AllRequirementsModel, String>() {
-		            @Override
-		            protected void updateItem(String item, boolean empty) {
-		                super.updateItem(item, empty);
+			allReqTable.setItems(dataList);
 
-		                if (item == null || empty) {
-		                    setText(null);
-		                    setStyle("");
-		                } else {
-		                    Text text = new Text(item);
-		                    text.setStyle("-fx-text-alignment:justify;");                      
-		                    text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
-		                    setGraphic(text);
-		                }
-		            }
-		        };
-		    });
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.err.println(String.format("Error: %s", e.getMessage()));
 		}
-	
+		reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
+		allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
+		userNmColumn.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("uName"));
+		allReq.setCellFactory(param -> {
+			return new TableCell<AllRequirementsModel, String>() {
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
+
+					if (item == null || empty) {
+						setText(null);
+						setStyle("");
+					} else {
+						Text text = new Text(item);
+						text.setStyle("-fx-text-alignment:justify;");
+						text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
+						setGraphic(text);
+					}
+				}
+			};
+		});
+	}
+
 	public void yourRequirements() {
 		try {
 			DbCon dbCon = new DbCon();
 			stmt = dbCon.con.createStatement();
 
-			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null and username='" + loggedinUname + "'");
+			ResultSet rs = stmt
+					.executeQuery("select * from allreq where mrk is null and username='" + loggedinUname + "'");
 
 			while (rs.next()) {
 
@@ -432,20 +474,21 @@ public class UserDashboardController implements Initializable {
 							alert.setContentText("Are You sure You want to delete this requirement?");
 							Optional<ButtonType> option = alert.showAndWait();
 							if (option.get().equals(ButtonType.OK)) {
-							try {
-								DbCon dbCon = new DbCon();
-								stmt = dbCon.con.createStatement();
-								int result = stmt.executeUpdate("update allreq set mrk='d' where reqno='" + reqno + "'");
-								if (result == 1) {
-									Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
-									newAlert.setContentText("deleted!");
-									newAlert.show();
-									refreshTable();
+								try {
+									DbCon dbCon = new DbCon();
+									stmt = dbCon.con.createStatement();
+									int result = stmt
+											.executeUpdate("update allreq set mrk='d' where reqno='" + reqno + "'");
+									if (result == 1) {
+										Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+										newAlert.setContentText("deleted!");
+										newAlert.show();
+										refreshTable();
+									}
+								} catch (SQLException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
 								}
-							} catch (SQLException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
 							}
 						});
 						setGraphic(editButton);
@@ -459,40 +502,38 @@ public class UserDashboardController implements Initializable {
 		};
 
 		actionCol.setCellFactory(cellfactory);
-	    yreq.setCellFactory(param -> {
-	        return new TableCell<YourRequirementsModel, String>() {
-	            @Override
-	            protected void updateItem(String item, boolean empty) {
-	                super.updateItem(item, empty);
+		yreq.setCellFactory(param -> {
+			return new TableCell<YourRequirementsModel, String>() {
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
 
-	                if (item == null || empty) {
-	                    setText(null);
-	                    setStyle("");
-	                } else {
-	                    Text text = new Text(item);
-	                    text.setStyle("-fx-text-alignment:justify;");                      
-	                    text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
-	                    setGraphic(text);
-	                }
-	            }
-	        };
-	    });
-		
+					if (item == null || empty) {
+						setText(null);
+						setStyle("");
+					} else {
+						Text text = new Text(item);
+						text.setStyle("-fx-text-alignment:justify;");
+						text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
+						setGraphic(text);
+					}
+				}
+			};
+		});
+
 	}
+
 	public void refreshTable() {
 		dataList.clear();
 		yourReqTable.getItems().clear();
 		yourRequirements();
 	}
-	
 
-    
 	@FXML
 	public void onClickLogout(ActionEvent event) {
 		LogoutController LogoutController = new LogoutController();
 		LogoutController.LogoutController(event);
 	}
-
 
 
 //	@FXML

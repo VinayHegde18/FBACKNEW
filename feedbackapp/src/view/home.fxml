@@ -31,20 +31,18 @@
                   <Font size="35.0" />
                </font>
             </Label>
+            <TextField fx:id="text1" cache="true" layoutX="72.0" layoutY="133.0" prefHeight="38.0" prefWidth="228.0" promptText="USERNAME">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </TextField>
+            <PasswordField fx:id="text2" cache="true" layoutX="72.0" layoutY="204.0" prefHeight="38.0" prefWidth="228.0" promptText="PASSWORD">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </PasswordField>
          </children>
       </AnchorPane>
-      <TextField fx:id="text1" cache="true" layoutX="644.0" layoutY="222.0" mouseTransparent="true" prefHeight="38.0" prefWidth="228.0" promptText="USERNAME">
-         <font>
-            <Font size="16.0" />
-         </font>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor></TextField>
-      <PasswordField fx:id="text2" cache="true" layoutX="644.0" layoutY="302.0" prefHeight="38.0" prefWidth="228.0" promptText="PASSWORD">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </PasswordField>
       <Button fx:id="submit" alignment="CENTER" blendMode="MULTIPLY" layoutX="644.0" layoutY="376.0" mnemonicParsing="false" onAction="#submit" prefHeight="38.0" prefWidth="228.0" text="login" textAlignment="JUSTIFY" textFill="#b29631">
          <font>
             <Font size="23.0" />

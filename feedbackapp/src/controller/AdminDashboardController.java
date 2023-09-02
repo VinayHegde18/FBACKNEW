@@ -44,14 +44,21 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JRDesignQuery;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.util.ReportCreator;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleDocxReportConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
+import net.sf.jasperreports.swing.JRViewer;
 import net.sf.jasperreports.view.JasperViewer;
 
 public class AdminDashboardController implements Initializable {
@@ -217,6 +224,9 @@ public class AdminDashboardController implements Initializable {
     
     @FXML
     private ChoiceBox<String> userNameBox;
+    
+    @FXML
+    private ChoiceBox<String> menuBox;
 
     @FXML
     private Button updateUserAuthLevel;
@@ -226,6 +236,8 @@ public class AdminDashboardController implements Initializable {
 	ArrayList<String> list = new ArrayList<>();
 	
 	ArrayList<String> userList = new ArrayList<>();
+	
+	ArrayList<String> menuList = new ArrayList<>();
 
     ArrayList<String> statelist = new ArrayList<>();
 
@@ -365,6 +377,7 @@ public class AdminDashboardController implements Initializable {
 			getUserNameBox();
 
 			getAuthLevel();
+			getMenu();
 			
 		}
 		else if (event.getSource() == homeBtn){
@@ -388,35 +401,10 @@ public class AdminDashboardController implements Initializable {
 	
     @FXML
     void keypressEvent(KeyEvent event) {
-    	try {
-		Node node = (Node) event.getSource();
-		Scene scene = node.getScene();
-		scene.setOnKeyPressed(ev -> {
-	            if (ev.getCode() == KeyCode.ESCAPE) {
-	    			 	 LogoutController logout = new LogoutController();
-	    			 	 logout.EscKeyPressed(event);
-	            }
-	            ev.consume();
-	        });
-    	}catch (Exception e) {
-			e.printStackTrace();
+    	KeyPressEvent keyPressEvent = new KeyPressEvent();
+    	keyPressEvent.escKeyEvenet(event);
 		}
-//		 scene.addEventFilter(KeyEvent.KEY_PRESSED, (KeyEvent ev) -> {
-//		Node node = (Node) event.getSource();
-//		Scene scene = node.getScene();
-//		scene.setOnKeyPressed(e -> {
-//		    if (e.getCode() == KeyCode.A) {
-//		        System.out.println("The 'A' key was pressed");
-//		    }
-//		});
-		
-//	Node node = (Node) event.getSource();
-//	Scene scene = node.getScene();
-//	
-//	scene.addEventFilter(KeyEvent.ANY, keyEvent -> {
-//        System.out.println(keyEvent);
-//    });
-    }
+
 	
 	public void getState() {
 
@@ -432,6 +420,27 @@ public class AdminDashboardController implements Initializable {
 				statelist.add(rs1.getString("statename"));
 			}
 			userState.getItems().addAll(statelist);
+
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
+	}
+	
+	public void getMenu() {
+
+		menuBox.getItems().removeAll(menuBox.getItems());
+
+		try {
+			DbCon dbCon = new DbCon();
+			Statement stmt = dbCon.con.createStatement();
+
+			ResultSet rs1 = stmt.executeQuery("select * from menumaster");
+
+			while (rs1.next()) {
+				menuList.add(rs1.getString("menuname"));
+			}
+			menuBox.getItems().addAll(menuList);
 
 		} catch (SQLException e) {
 
@@ -530,10 +539,6 @@ public class AdminDashboardController implements Initializable {
 				userNameProfile.setText(profileRs.getString("username"));
 
 				emailIdProfile.setText(profileRs.getString("email"));
-				
-				
-//				userStateBox.getItems().addAll(statelist);
-//				userStateBox.setId(profileRs.getString("userstate"));
 				
 				userStateBox.getItems().setAll(profileRs.getString("userstate"));
 				
@@ -783,17 +788,6 @@ public class AdminDashboardController implements Initializable {
 
 		String uState = userState.getItems().get(0);
 
-//		userName.setOnKeyPressed(new EventHandler<KeyEvent>()
-//		 {
-//		   @Override
-//		   public void handle(KeyEvent ke)
-//		   {
-//		     if (ke.getCode().equals(KeyCode.ENTER))
-//		     {
-//		       System.out.println("hello");
-//		     }
-//		   }
-//		 });
 		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name, uLevel, uState);
 		clearUsersFields();
 	}
@@ -889,195 +883,57 @@ public class AdminDashboardController implements Initializable {
 	    void genarateReport(ActionEvent event) {
 		 DbCon dbCon = new DbCon();
 		 Connection con = dbCon.con;
-		 Map<String, Object> map = new HashMap<>();
-        map.put("headding", "allusers");//parameter name should be like it was named inside your report.
-         genarateReport(
-        		 REPORT, map, con );
+           try {
+			JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Administrator\\git\\FBACKNEW\\feedbackapp\\src\\reports\\allusers.jrxml");
+			String str = "select * from users where del is null";
+			JRDesignQuery updateQuery = new JRDesignQuery();
+			updateQuery.setText(str);
+			jDesign.setQuery(updateQuery);
+			JasperReport jReport = JasperCompileManager.compileReport(jDesign);
+			JasperPrint jPrint = JasperFillManager.fillReport(jReport, null, con);
+			JasperViewer.viewReport(jPrint,false);
+			
+		} catch (JRException e) {
+			e.printStackTrace();
+		}
 	    }
-	
-//	 public static String OUT_PUT = "your_output_file_path/myreport.docx";
-	 public static String REPORT = "/feedbackapp/src/reports/allusers.jrxml";
-
-	 public void genarateReport(String reportPath,
-	         Map<String, Object> map, Connection con) {
-	     try {
-
-	         JasperReport jr = JasperCompileManager.compileReport(
-	                 ClassLoader.getSystemResourceAsStream(reportPath));
-	         JasperPrint jp = JasperFillManager.fillReport(jr, map, con);
-	         JRDocxExporter export = new JRDocxExporter();
-	     export.setExporterInput(new SimpleExporterInput(jp));
-//	     export.setExporterOutput(new SimpleOutputStreamExporterOutput(new File(OUT_PUT)));
-	     SimpleDocxReportConfiguration config = new SimpleDocxReportConfiguration();
-	     export.setConfiguration(config);
-	     export.exportReport();
-	     } catch (JRException ex) {
-	         ex.printStackTrace();   
-	     }
-	 }
 	 
 	@FXML
     void updateUserAuthLevelFunction(ActionEvent event) {
 		
 //		String authUserName=userNameBox.getItems().get(0);
-//		String authLevelName = authLevelBox.getItems().get(0);
-//		ifbLOC
-//		
-//		
-//		try {
-//			DbCon dbCon = new DbCon();
-//			Statement stmt = dbCon.con.createStatement();
-//			stmt = dbCon.con.createStatement();
-//
-//			int result = stmt.executeUpdate("insert into userauthlevel(authusername,authlevelname,blocked,status) values ('"
-//					+ authUserName + "','" + authLevelName + "','" + ifBlocked + "','" + status + "')");
-//			
-//		} catch (SQLException e) {
-//
-//			e.printStackTrace();
-//		}
+		String authUserName=userNameBox.getValue();
+		String authLevelName = authLevelBox.getValue();
+		String menuItem = menuBox.getValue();
+		
+		try {
+			DbCon dbCon = new DbCon();
+			Statement stmt = dbCon.con.createStatement();
+			stmt = dbCon.con.createStatement();
+
+			int result = stmt.executeUpdate("insert into userauthlevel(authusername,authLevelName,menuitem) values ('"
+					+ authUserName + "','" + authLevelName + "','" + menuItem + "')");
+			if (result>0)
+			{
+				Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+				newAlert.setContentText("Saved Successfully");
+				newAlert.show();
+			}
+			else {
+				Alert newAlert = new Alert(Alert.AlertType.ERROR);
+				newAlert.setContentText("Save Unsuccessfull");
+				newAlert.show();
+			}
+		} catch (SQLException e) {
+
+			e.printStackTrace();
+		}
     }
 
 	@FXML
 	void logout(ActionEvent event) {
 		LogoutController LogoutController = new LogoutController();
 		LogoutController.LogoutController(event);
+		
 	}
-
-//	    
-//    @FXML
-//    private AnchorPane adminContainer;
-//
-//    @FXML
-//    private Button logout;
-//
-//    @FXML
-//    private AnchorPane adminLeftContainer;
-//    
-//    @FXML
-//    private Button profile;
-//
-//    @FXML
-//    private Button addUser;
-//
-//    @FXML
-//    private Button manageUser;
-//
-//    @FXML
-//    private Button requirements;
-//	    
-//		@FXML
-//		private TableView<AllRequirementsModel> allReqTable;
-//		@FXML
-//		private TableColumn<AllRequirementsModel, Integer> reqno;
-//		@FXML
-//		private TableColumn<AllRequirementsModel, String> allReq;
-//
-//		private ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
-//
-//		@Override
-//		public void initialize(URL url, ResourceBundle rb) {
-//
-//			Connection con;
-//			try {
-//				con = DriverManager.getConnection("jdbc:mysql://localhost/java", "root", "");
-//				Statement stmt = con.createStatement();
-//
-//				ResultSet rs = stmt.executeQuery("select * from allreq order by reqno desc limit 5");
-//
-//				while (rs.next()) {
-//
-//					dataList.add(new AllRequirementsModel(rs.getInt("reqno"), rs.getString("req")));
-//
-//				}
-//				allReqTable.setItems(dataList);
-//
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				System.err.println(String.format("Error: %s", e.getMessage()));
-//			}
-//			reqno.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, Integer>("reqno"));
-//			allReq.setCellValueFactory(new PropertyValueFactory<AllRequirementsModel, String>("req"));
-//		}
-//
-//
-//    @FXML
-//    void addUsers(ActionEvent event) {
-//		try {
-//
-//			FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/adduser.fxml"));
-//
-//			Pane root2 = newloader.load();
-//			Scene scene = new Scene(root2);
-//			Stage newstage = new Stage();
-//			newstage.setResizable(false);
-//			newstage.setScene(scene);
-//
-//			newstage.show();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			System.err.println(String.format("Error: %s", e.getMessage()));
-//		}
-//    }
-//
-//    @FXML
-//    void manageUsers(ActionEvent event) {
-//		try {
-//
-//			FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/manageusers.fxml"));
-//
-//			Pane root2 = newloader.load();
-//
-//			Scene scene = new Scene(root2);
-//			Stage newstage = new Stage();
-//			newstage.setResizable(false);
-//			newstage.setScene(scene);
-//
-//			newstage.show();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			System.err.println(String.format("Error: %s", e.getMessage()));
-//		}
-//    }
-//    
-//    @FXML
-//    void yourProfile(ActionEvent event) {
-//		try {
-//
-//			FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/profile.fxml"));
-//
-//			Pane root2 = newloader.load();
-//			Scene scene = new Scene(root2);
-//			Stage newstage = new Stage();
-//			newstage.setResizable(false);
-//			newstage.setScene(scene);
-//
-//			newstage.show();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			System.err.println(String.format("Error: %s", e.getMessage()));
-//		}
-//    }
-//
-//    @FXML
-//    void requirements(ActionEvent event) {
-//		try {
-//
-//			FXMLLoader newloader = new FXMLLoader(getClass().getResource("/view/allrequirement.fxml"));
-//
-//			Pane root2 = newloader.load();
-//
-//			AllRequirementsController AllRequirementsController = new AllRequirementsController();
-//			Scene scene = new Scene(root2);
-//			Stage newstage = new Stage();
-//			newstage.setResizable(false);
-//			newstage.setScene(scene);
-//
-//			newstage.show();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//			System.err.println(String.format("Error: %s", e.getMessage()));
-//		}
-//    }
-//
 }

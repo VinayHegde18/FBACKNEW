@@ -26,3 +26,18 @@
 #userPage {
 	-fx-background-color: #C3CFE5;
 }
+#menuVbox{
+	-fx-padding:105px 40px;
+	-fx-spacing:20px;
+	-fx-background-color: orange;
+}
+#menuBtn1,#menuBtn2,#menuBtn3,#menuBtn4,#menuBtn5,#menuBtn6{
+	
+	-fx-background-color: #3E4D4E;
+	-fx-text-fill: #C9F1F5;
+	-fx-font-size: 13px;
+	-fx-font-weight: bold;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+	-fx-cursor:hand;
+	-fx-width:50px;
+}
