@@ -103,10 +103,11 @@ public class controller {
 				stage.close();
 
 				try {
-
+                   
 					FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/userDashboard.fxml"));
 
 					Pane root = loader.load();
+					Node nnode = (Node) event.getSource();
 
 					UserDashboardController UserDashboardController = loader.getController();
 					UserDashboardController.setLabelText(uname);
@@ -148,7 +149,6 @@ public class controller {
 					Stage loginStage = new Stage();
 					loginStage.setScene(scene);
 					loginStage.setResizable(false);
-					loginStage.setScene(scene);
 
 					loginStage.show();
 				} catch (IOException e) {
@@ -162,9 +162,8 @@ public class controller {
 			Optional<ButtonType> option = alert.showAndWait();
 
 			if (option.get().equals(ButtonType.OK)) {
-				text1.setText("");
-				text2.setText("");
-				text1.setFocusTraversable(true);
+				text1.clear();
+				text2.clear();
 			}
 		}
 	}

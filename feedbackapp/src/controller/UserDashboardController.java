@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,6 +9,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
+import javax.xml.transform.Source;
 
 import dbcon.DbCon;
 import javafx.animation.Animation.Status;
@@ -19,9 +22,12 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SubScene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -168,45 +174,56 @@ public class UserDashboardController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		DbCon dbCon = new DbCon();
+		
 		try {
 			stmt = dbCon.con.createStatement();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}
-		VBox newroot = new VBox();
-		newroot.setId("menuVbox");
-		int btnId=1;
-		String uname=controller.uname;
+//		ClassLoader scene = FXMLLoader.getDefaultClassLoader().getParent();
+//		Parent parent = nnode.getParent();
+		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserDashboardMenu.fxml"));
+		Pane root;
 		try {
-			Statement resstmt = dbCon.con.createStatement();
-			ResultSet menulist = resstmt.executeQuery(
-					"select * from userauthlevel where menuitem in (select menuname from menumaster) and authusername='" + uname + "'");
-			while (menulist.next()) {
-				String buttonString = menulist.getString("menuItem");
-				Button button = new Button(buttonString);
-				String conv = String.valueOf(btnId);
-				String btnid = "menuBtn"+conv;
-				button.setId(btnid);
-				button.setMinWidth(200);
-				button.setMaxWidth(200);
-				button.setMaxHeight(40);
-				button.setMinHeight(40);
-				button.setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-//						onActionClass onActionClass = new onActionClass();
-//						onActionClass.onAction(event, btnid);
-					}
-					
-				});
-				newroot.getChildren().addAll(button);
-				btnId++;
+			root = loader.load();
+//			newroot.setId("menuVbox");
+			int btnId=1;
+			try {
+				Statement resstmt = dbCon.con.createStatement();
+				ResultSet menulist = resstmt.executeQuery(
+						"select * from userauthlevel where menuitem in (select menuname from menumaster) and authusername='vinay'");
+				while (menulist.next()) {
+					String buttonString = menulist.getString("menuItem");
+					Button button = new Button(buttonString);
+					String conv = String.valueOf(btnId);
+					String btnid = "menuBtn"+conv;
+					button.setId(btnid);
+					button.setMinWidth(200);
+					button.setMaxWidth(200);
+					button.setMaxHeight(40);
+					button.setMinHeight(40);
+					button.setOnAction(new EventHandler<ActionEvent>() {
+						@Override
+						public void handle(ActionEvent event) {
+							onActionClass onActionClass = new onActionClass();
+							onActionClass.onAction(event, btnid);
+						}
+						
+					});
+					root.getChildren().addAll(button);
+					btnId++;
+				}
+				
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+
+			SubScene subScene = new SubScene(root, btnId, btnId);
+			subScene.setVisible(true);
+		} catch (IOException e1) {
+			e1.printStackTrace();
 		}
 		
-//		root.getChildren().add(newroot);
 		try {
 
 			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
@@ -243,23 +260,25 @@ public class UserDashboardController implements Initializable {
 			};
 		});
 	}
+	
+
 
 	public void setLabelText(String text) {
 		wlcometxt.setText("Welcome " + text);
 	}
 
-	public void onClickDisplay(ActionEvent event) {
-
-		if (event.getSource() == profileBtn) {
-
-			profileContainer.setVisible(true);
-			reqContainer.setVisible(false);
-			yourReqContainer.setVisible(false);
-			postContainer.setVisible(false);
-			initContainer.setVisible(false);
-			getUserProfileDetails();
-//			UserProfileController.GetUserDetails();
-		}
+//	public void onClickDisplay(ActionEvent event) {
+//
+//		if (event.getSource() == profileBtn) {
+//
+//			profileContainer.setVisible(true);
+//			reqContainer.setVisible(false);
+//			yourReqContainer.setVisible(false);
+//			postContainer.setVisible(false);
+//			initContainer.setVisible(false);
+//			getUserProfileDetails();
+////			UserProfileController.GetUserDetails();
+//		}
 
 //		else if (event.getSource() == allReqButton) {
 //
@@ -300,8 +319,8 @@ public class UserDashboardController implements Initializable {
 //			yourReqTable.getItems().clear();
 //			yourRequirements();
 
-		}
-	}
+//		}
+//	}
 
 	@FXML
 	void postRequirements(ActionEvent event) {
