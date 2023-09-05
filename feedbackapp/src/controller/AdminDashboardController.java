@@ -206,40 +206,40 @@ public class AdminDashboardController implements Initializable {
 
 	@FXML
 	public TableColumn<AllRequirementsModel, String> uNameColumn;
-	
+
 	@FXML
 	protected AnchorPane initContainer;
-	
-    @FXML
-	private Label adminLabel2;
-    
-    @FXML
-    private Label adminLabel1;
-	
-    @FXML
-    protected Button homeBtn;
-    
-    @FXML
-    private ChoiceBox<String> userStateBox;
-    
-    @FXML
-    private ChoiceBox<String> userNameBox;
-    
-    @FXML
-    private ChoiceBox<String> menuBox;
 
-    @FXML
-    private Button updateUserAuthLevel;
+	@FXML
+	private Label adminLabel2;
+
+	@FXML
+	private Label adminLabel1;
+
+	@FXML
+	protected Button homeBtn;
+
+	@FXML
+	private ChoiceBox<String> userStateBox;
+
+	@FXML
+	private ChoiceBox<String> userNameBox;
+
+	@FXML
+	private ChoiceBox<String> menuBox;
+
+	@FXML
+	private Button updateUserAuthLevel;
 
 	ArrayList<String> initlist = new ArrayList<>();
 
 	ArrayList<String> list = new ArrayList<>();
-	
+
 	ArrayList<String> userList = new ArrayList<>();
-	
+
 	ArrayList<String> menuList = new ArrayList<>();
 
-    ArrayList<String> statelist = new ArrayList<>();
+	ArrayList<String> statelist = new ArrayList<>();
 
 	ArrayList<String> levellist = new ArrayList<>();
 
@@ -248,9 +248,9 @@ public class AdminDashboardController implements Initializable {
 	public static ObservableList<AllRequirementsModel> reqList = FXCollections.observableArrayList();
 
 	public static Statement stmt;
-	
+
 	@FXML
-    private Button genarateReportBtn;
+	private Button genarateReportBtn;
 
 	@Override
 	public void initialize(URL arg0, ResourceBundle arg1) {
@@ -290,7 +290,7 @@ public class AdminDashboardController implements Initializable {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-			
+
 			initContainer.setVisible(false);
 
 			getProfileDetails();
@@ -307,7 +307,7 @@ public class AdminDashboardController implements Initializable {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-			
+
 			initContainer.setVisible(false);
 
 			levellist.clear();
@@ -328,7 +328,7 @@ public class AdminDashboardController implements Initializable {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-			
+
 			initContainer.setVisible(false);
 
 			usersList.clear();
@@ -350,7 +350,7 @@ public class AdminDashboardController implements Initializable {
 			allReqTable.setVisible(true);
 
 			authPanel.setVisible(false);
-			
+
 			initContainer.setVisible(false);
 
 			reqList.clear();
@@ -371,16 +371,19 @@ public class AdminDashboardController implements Initializable {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(true);
-			
+
 			initContainer.setVisible(false);
-			
+
+			userList.clear();
+			menuList.clear();
+			list.clear();
+
 			getUserNameBox();
 
 			getAuthLevel();
 			getMenu();
-			
-		}
-		else if (event.getSource() == homeBtn){
+
+		} else if (event.getSource() == homeBtn) {
 
 			profileContainer.setVisible(false);
 
@@ -391,21 +394,20 @@ public class AdminDashboardController implements Initializable {
 			allReqTable.setVisible(false);
 
 			authPanel.setVisible(false);
-			
+
 			initContainer.setVisible(true);
 			initTable.getItems().clear();
 			initialize(null, null);
-			
+
 		}
 	}
-	
-    @FXML
-    void keypressEvent(KeyEvent event) {
-    	KeyPressEvent keyPressEvent = new KeyPressEvent();
-    	keyPressEvent.escKeyEvenet(event);
-		}
 
-	
+	@FXML
+	void keypressEvent(KeyEvent event) {
+		KeyPressEvent keyPressEvent = new KeyPressEvent();
+		keyPressEvent.escKeyEvenet(event);
+	}
+
 	public void getState() {
 
 		userState.getItems().removeAll(userState.getItems());
@@ -426,7 +428,7 @@ public class AdminDashboardController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void getMenu() {
 
 		menuBox.getItems().removeAll(menuBox.getItems());
@@ -438,7 +440,7 @@ public class AdminDashboardController implements Initializable {
 			ResultSet rs1 = stmt.executeQuery("select * from menumaster");
 
 			while (rs1.next()) {
-				menuList.add(rs1.getString("menuname"));
+				menuList.add(rs1.getString("menubtn"));
 			}
 			menuBox.getItems().addAll(menuList);
 
@@ -451,6 +453,7 @@ public class AdminDashboardController implements Initializable {
 	public void getUserLevel() {
 
 		userLevel.getItems().removeAll(userLevel.getItems());
+//		userLevel.getItems().clear();
 
 		try {
 			DbCon dbCon = new DbCon();
@@ -470,10 +473,11 @@ public class AdminDashboardController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void getAuthLevel() {
 
 		authLevelBox.getItems().removeAll(authLevelBox.getItems());
+//		authLevelBox.getItems().clear();
 
 		try {
 			DbCon dbCon = new DbCon();
@@ -514,7 +518,7 @@ public class AdminDashboardController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void getProfileDetails() {
 
 		DbCon dbCon = new DbCon();
@@ -524,7 +528,7 @@ public class AdminDashboardController implements Initializable {
 		Statement stmt;
 
 		try {
-			
+
 			stmt = dbCon.con.createStatement();
 
 			ResultSet profileRs = stmt
@@ -539,9 +543,9 @@ public class AdminDashboardController implements Initializable {
 				userNameProfile.setText(profileRs.getString("username"));
 
 				emailIdProfile.setText(profileRs.getString("email"));
-				
+
 				userStateBox.getItems().setAll(profileRs.getString("userstate"));
-				
+
 			}
 			userStateBox.getItems().addAll(statelist);
 
@@ -635,7 +639,7 @@ public class AdminDashboardController implements Initializable {
 	public void AllRequirements() {
 
 		try {
-			
+
 			allReqTable.getItems().clear();
 
 			DbCon dbCon = new DbCon();
@@ -709,24 +713,24 @@ public class AdminDashboardController implements Initializable {
 
 		actionCol.setCellFactory(cellfactoryNew);
 
-	    allReq.setCellFactory(param -> {
-	        return new TableCell<AllRequirementsModel, String>() {
-	            @Override
-	            protected void updateItem(String item, boolean empty) {
-	                super.updateItem(item, empty);
+		allReq.setCellFactory(param -> {
+			return new TableCell<AllRequirementsModel, String>() {
+				@Override
+				protected void updateItem(String item, boolean empty) {
+					super.updateItem(item, empty);
 
-	                if (item == null || empty) {
-	                    setText(null);
-	                    setStyle("");
-	                } else {
-	                    Text text = new Text(item);
-	                    text.setStyle("-fx-text-alignment:justify;");                      
-	                    text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
-	                    setGraphic(text);
-	                }
-	            }
-	        };
-	    });
+					if (item == null || empty) {
+						setText(null);
+						setStyle("");
+					} else {
+						Text text = new Text(item);
+						text.setStyle("-fx-text-alignment:justify;");
+						text.wrappingWidthProperty().bind(getTableColumn().widthProperty().subtract(35));
+						setGraphic(text);
+					}
+				}
+			};
+		});
 	}
 
 	public void refreshReqTable() {
@@ -791,6 +795,7 @@ public class AdminDashboardController implements Initializable {
 		AddUserController.onClickCreateUser(uname, pword, cpword, emailStr, name, uLevel, uState);
 		clearUsersFields();
 	}
+
 	@FXML
 	void onClickClear(ActionEvent event) {
 
@@ -816,7 +821,7 @@ public class AdminDashboardController implements Initializable {
 
 	@FXML
 	void onClickUpdateUser(ActionEvent event) {
-		
+
 		String fullNameString = fullNameProfile.getText();
 
 		String userPasswordString = userPasswordProfile.getText();
@@ -830,25 +835,26 @@ public class AdminDashboardController implements Initializable {
 		Alert alert = new Alert(AlertType.CONFIRMATION);
 		alert.setContentText("Are You sure You want to update?");
 		Optional<ButtonType> option = alert.showAndWait();
-		if(option.get().equals(ButtonType.OK)) {
-		
-		DbCon dbCon = new DbCon();
+		if (option.get().equals(ButtonType.OK)) {
 
-		try {
-			stmt = dbCon.con.createStatement();
+			DbCon dbCon = new DbCon();
 
-				int result = stmt.executeUpdate("UPDATE USERS SET name='"
-						+ fullNameString + "',email='" + emaiIdString + "',password='" + userPasswordString + "',cpassword='" + userPasswordString + "',userstate='" + userStateString + "' WHERE USERNAME='" + userNameString + "'");
+			try {
+				stmt = dbCon.con.createStatement();
 
-				if (result>= 1) {
+				int result = stmt.executeUpdate("UPDATE USERS SET name='" + fullNameString + "',email='" + emaiIdString
+						+ "',password='" + userPasswordString + "',cpassword='" + userPasswordString + "',userstate='"
+						+ userStateString + "' WHERE USERNAME='" + userNameString + "'");
+
+				if (result >= 1) {
 					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
 					newAlert.setContentText("Profile Updated Successfully");
 					newAlert.show();
 				}
 
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -878,62 +884,84 @@ public class AdminDashboardController implements Initializable {
 		getState();
 		getUserLevel();
 	}
-	
-	 @FXML
-	    void genarateReport(ActionEvent event) {
-		 DbCon dbCon = new DbCon();
-		 Connection con = dbCon.con;
-           try {
-			JasperDesign jDesign = JRXmlLoader.load("C:\\Users\\Administrator\\git\\FBACKNEW\\feedbackapp\\src\\reports\\allusers.jrxml");
+
+	@FXML
+	void genarateReport(ActionEvent event) {
+		DbCon dbCon = new DbCon();
+		Connection con = dbCon.con;
+		try {
+			JasperDesign jDesign = JRXmlLoader
+					.load("C:\\Users\\Administrator\\git\\FBACKNEW\\feedbackapp\\src\\reports\\allusers.jrxml");
 			String str = "select * from users where del is null";
 			JRDesignQuery updateQuery = new JRDesignQuery();
 			updateQuery.setText(str);
 			jDesign.setQuery(updateQuery);
 			JasperReport jReport = JasperCompileManager.compileReport(jDesign);
 			JasperPrint jPrint = JasperFillManager.fillReport(jReport, null, con);
-			JasperViewer.viewReport(jPrint,false);
-			
+			JasperViewer.viewReport(jPrint, false);
+
 		} catch (JRException e) {
 			e.printStackTrace();
 		}
-	    }
-	 
+	}
+
 	@FXML
-    void updateUserAuthLevelFunction(ActionEvent event) {
-		
+	void updateUserAuthLevelFunction(ActionEvent event) {
+
 //		String authUserName=userNameBox.getItems().get(0);
-		String authUserName=userNameBox.getValue();
+		String authUserName = userNameBox.getValue();
 		String authLevelName = authLevelBox.getValue();
-		String menuItem = menuBox.getValue();
-		
+		String menuBtn = menuBox.getValue();
+
 		try {
 			DbCon dbCon = new DbCon();
 			Statement stmt = dbCon.con.createStatement();
 			stmt = dbCon.con.createStatement();
 
-			int result = stmt.executeUpdate("insert into userauthlevel(authusername,authLevelName,menuitem) values ('"
-					+ authUserName + "','" + authLevelName + "','" + menuItem + "')");
-			if (result>0)
-			{
-				Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
-				newAlert.setContentText("Saved Successfully");
-				newAlert.show();
-			}
-			else {
-				Alert newAlert = new Alert(Alert.AlertType.ERROR);
-				newAlert.setContentText("Save Unsuccessfull");
-				newAlert.show();
-			}
-		} catch (SQLException e) {
+			String authQuery = "select * from userauthlevel where authusername='" + authUserName
+					+ "' and authlevelname='Visible'";
+			ResultSet rSet = stmt.executeQuery(authQuery);
+			if (rSet.next()) {
+				int result = stmt.executeUpdate("update userauthlevel set authlevelname='" + authLevelName
+						+ "' where authusername='" + authUserName + "' and authlevelname='Visible' ");
+				if (result > 0) {
+					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+					newAlert.setContentText("Updated Successfully");
+					newAlert.show();
+				} else {
+					Alert newAlert = new Alert(Alert.AlertType.ERROR);
+					newAlert.setContentText("Update Unsuccessfull");
+					newAlert.show();
+				}
+			} else {
 
+				int result = stmt
+						.executeUpdate("insert into userauthlevel(authusername,authLevelName,menubtn) values ('"
+								+ authUserName + "','" + authLevelName + "','" + menuBtn + "')");
+				if (result > 0) {
+					Alert newAlert = new Alert(Alert.AlertType.INFORMATION);
+					newAlert.setContentText("Saved Successfully");
+					newAlert.show();
+				} else {
+					Alert newAlert = new Alert(Alert.AlertType.ERROR);
+					newAlert.setContentText("Save Unsuccessfull");
+					newAlert.show();
+				}
+			}
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-    }
+		getUserNameBox();
+		getAuthLevel();
+		getMenu();
+
+	}
 
 	@FXML
 	void logout(ActionEvent event) {
 		LogoutController LogoutController = new LogoutController();
 		LogoutController.LogoutController(event);
-		
+
 	}
 }

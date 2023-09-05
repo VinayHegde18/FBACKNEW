@@ -105,7 +105,7 @@ public class UserDashboardController implements Initializable {
 	public Button profileBtn;
 
 	@FXML
-	static AnchorPane postContainer;
+	public AnchorPane postContainer;
 
 	@FXML
 	private Button postReq;
@@ -147,6 +147,9 @@ public class UserDashboardController implements Initializable {
 	private AnchorPane initContainer;
 
 	@FXML
+	private VBox menuVbox;
+
+	@FXML
 	public TableView<AllRequirementsModel> initTable;
 
 	@FXML
@@ -158,7 +161,7 @@ public class UserDashboardController implements Initializable {
 	@FXML
 	public TableColumn<AllRequirementsModel, String> uNameCol;
 
-	public String loggedinUname = controller.curUname;
+	private String loggedinUname = controller.curUname;
 
 	public ObservableList<AllRequirementsModel> dataList = FXCollections.observableArrayList();
 
@@ -174,56 +177,38 @@ public class UserDashboardController implements Initializable {
 	public void initialize(URL arg0, ResourceBundle arg1) {
 
 		DbCon dbCon = new DbCon();
-		
+//		int btnId=1;
 		try {
 			stmt = dbCon.con.createStatement();
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-//		ClassLoader scene = FXMLLoader.getDefaultClassLoader().getParent();
-//		Parent parent = nnode.getParent();
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UserDashboardMenu.fxml"));
-		Pane root;
-		try {
-			root = loader.load();
-//			newroot.setId("menuVbox");
-			int btnId=1;
-			try {
-				Statement resstmt = dbCon.con.createStatement();
-				ResultSet menulist = resstmt.executeQuery(
-						"select * from userauthlevel where menuitem in (select menuname from menumaster) and authusername='vinay'");
-				while (menulist.next()) {
-					String buttonString = menulist.getString("menuItem");
-					Button button = new Button(buttonString);
-					String conv = String.valueOf(btnId);
-					String btnid = "menuBtn"+conv;
-					button.setId(btnid);
-					button.setMinWidth(200);
-					button.setMaxWidth(200);
-					button.setMaxHeight(40);
-					button.setMinHeight(40);
-					button.setOnAction(new EventHandler<ActionEvent>() {
-						@Override
-						public void handle(ActionEvent event) {
-							onActionClass onActionClass = new onActionClass();
-							onActionClass.onAction(event, btnid);
-						}
-						
-					});
-					root.getChildren().addAll(button);
-					btnId++;
-				}
-				
-			} catch (Exception e) {
-				e.printStackTrace();
+			String menuQueryString = "select userauthlevel.menuBtn as menubtn,menumaster.menuname as menuname from menumaster INNER join userauthlevel ON menumaster.menubtn= userauthlevel.menuBtn  and authusername='"
+					+ loggedinUname + "' and authlevelname='visible'";
+			ResultSet menulist = stmt.executeQuery(menuQueryString);
+			while (menulist.next()) {
+				String buttonString = menulist.getString("menuname");
+				Button button = new Button(buttonString);
+//				String conv = String.valueOf(btnId);
+//				String btnid = "menuBtn"+conv;
+				String btnid = menulist.getString("menubtn");
+				button.setId(btnid);
+				button.setMinWidth(200);
+				button.setMaxWidth(200);
+				button.setMaxHeight(40);
+				button.setMinHeight(40);
+				button.setOnAction(new EventHandler<ActionEvent>() {
+					@Override
+					public void handle(ActionEvent event) {
+						onClickDisplay(btnid);
+					}
+
+				});
+				menuVbox.getChildren().addAll(button);
+//				btnId++;
 			}
 
-			SubScene subScene = new SubScene(root, btnId, btnId);
-			subScene.setVisible(true);
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		
+
 		try {
 
 			ResultSet rs = stmt.executeQuery("select * from allreq where mrk is null");
@@ -260,67 +245,62 @@ public class UserDashboardController implements Initializable {
 			};
 		});
 	}
-	
-
 
 	public void setLabelText(String text) {
 		wlcometxt.setText("Welcome " + text);
 	}
 
-//	public void onClickDisplay(ActionEvent event) {
-//
-//		if (event.getSource() == profileBtn) {
-//
-//			profileContainer.setVisible(true);
-//			reqContainer.setVisible(false);
-//			yourReqContainer.setVisible(false);
-//			postContainer.setVisible(false);
-//			initContainer.setVisible(false);
-//			getUserProfileDetails();
-////			UserProfileController.GetUserDetails();
-//		}
+	public void onClickDisplay(String btnId) {
 
-//		else if (event.getSource() == allReqButton) {
-//
-//			profileContainer.setVisible(false);
-//			reqContainer.setVisible(true);
-//			yourReqContainer.setVisible(false);
-//			postContainer.setVisible(false);
-//			initContainer.setVisible(false);
-//			allReqTable.getItems().clear();
-//			AllRequirements();
-//
-//		} else if (event.getSource() == postButton) {
-//
-//			profileContainer.setVisible(false);
-//			reqContainer.setVisible(false);
-//			yourReqContainer.setVisible(false);
-//			postContainer.setVisible(true);
-//			initContainer.setVisible(false);
-//			postText.setText("");
-//
-//		} else if (event.getSource() == yourReqButton) {
-//
-//			profileContainer.setVisible(false);
-//			reqContainer.setVisible(false);
-//			yourReqContainer.setVisible(true);
-//			postContainer.setVisible(false);
-//			initContainer.setVisible(false);
-//			yourReqTable.getItems().clear();
-//			yourRequirements();
-//
-//		} else if (event.getSource() == homeBtn) {
-//
-//			profileContainer.setVisible(false);
-//			reqContainer.setVisible(false);
-//			yourReqContainer.setVisible(false);
-//			postContainer.setVisible(false);
-//			initContainer.setVisible(true);
-//			yourReqTable.getItems().clear();
-//			yourRequirements();
+		if (btnId.equalsIgnoreCase("menuBtn1")) {
 
-//		}
-//	}
+			profileContainer.setVisible(false);
+			reqContainer.setVisible(false);
+			yourReqContainer.setVisible(false);
+			initContainer.setVisible(true);
+			postContainer.setVisible(false);
+			AllRequirements();
+		}
+
+		else if (btnId.equalsIgnoreCase("menuBtn2")) {
+
+			profileContainer.setVisible(true);
+			reqContainer.setVisible(false);
+			yourReqContainer.setVisible(false);
+			postContainer.setVisible(false);
+			initContainer.setVisible(false);
+			allReqTable.getItems().clear();
+			getUserProfileDetails();
+
+		} else if (btnId.equalsIgnoreCase("menuBtn3")) {
+
+			profileContainer.setVisible(false);
+			reqContainer.setVisible(false);
+			yourReqContainer.setVisible(false);
+			postContainer.setVisible(true);
+			initContainer.setVisible(false);
+			postText.clear();
+
+		} else if (btnId.equalsIgnoreCase("menuBtn4")) {
+			postContainer.setVisible(false);
+			profileContainer.setVisible(false);
+			reqContainer.setVisible(true);
+			yourReqContainer.setVisible(false);
+			initContainer.setVisible(false);
+			yourReqTable.getItems().clear();
+			AllRequirements();
+
+		} else if (btnId.equalsIgnoreCase("menuBtn5")) {
+			postContainer.setVisible(false);
+			profileContainer.setVisible(false);
+			reqContainer.setVisible(false);
+			yourReqContainer.setVisible(true);
+			initContainer.setVisible(false);
+			yourReqTable.getItems().clear();
+			yourRequirements();
+
+		}
+	}
 
 	@FXML
 	void postRequirements(ActionEvent event) {
@@ -330,7 +310,7 @@ public class UserDashboardController implements Initializable {
 		try {
 
 			PostRequirementsController.postRequirements(reqText);
-			postText.setText("");
+			postText.clear();
 
 		} catch (SQLException e) {
 
@@ -411,6 +391,7 @@ public class UserDashboardController implements Initializable {
 	}
 
 	public void AllRequirements() {
+		allReqTable.getItems().clear();
 		try {
 			DbCon dbCon = new DbCon();
 			stmt = dbCon.con.createStatement();
@@ -553,7 +534,6 @@ public class UserDashboardController implements Initializable {
 		LogoutController LogoutController = new LogoutController();
 		LogoutController.LogoutController(event);
 	}
-
 
 //	@FXML
 //	Button yourReqButton;

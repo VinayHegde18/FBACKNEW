@@ -4,7 +4,7 @@
 #logLabel{
 	-fx-text-fill:#E5BCB4;
 }
-#exit{
+#exit,#home{
 	-fx-background-color:#DA7708;
 	-fx-text-fill:white;
 }
